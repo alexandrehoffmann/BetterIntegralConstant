@@ -34,7 +34,7 @@ namespace BIC
  * @endcode
  */
 template<typename T, typename VALUE>
-concept MutOrFixed = std::same_as<T, VALUE> or (IsFixed<VALUE>::value and std::same_as<T, typename Fixed<T, VALUE>::Type>);
+concept MutOrFixed = std::same_as<T, VALUE> or (IsFixed<VALUE>::value and std::same_as<T, typename VALUE::Type>);
 
 } // namespace BIC
 
