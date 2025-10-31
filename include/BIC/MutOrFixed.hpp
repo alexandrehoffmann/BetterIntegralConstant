@@ -12,16 +12,16 @@ namespace BIC
 /**
  * @brief Concept that constrains a type to be either a specific type or a Fixed type of that type.
  *
- * The `MutOrFixed` concept is satisfied if and only if the type `VALUE` is either:
- * 1. Exactly the type `T`, or
- * 2. A `BIC::Fixed<T, VALUE>` type whose underlying type matches `T`.
+ * The `MutOrFixed` concept is satisfied if and only if the type `Type` is either:
+ * 1. Exactly the type `RefType`, or
+ * 2. A `BIC::Fixed` type whose underlying type matches `RefType`.
  *
  * This is useful for generic functions or classes that need to accept either
- * runtime values (`T`) or compile-time fixed values (`Fixed<T, VALUE>`),
+ * runtime values (`RefType`) or compile-time fixed values (`Fixed<RefType, VALUE>`),
  * ensuring type safety and compile-time guarantees.
  *
- * @tparam T The base type (usually the mutable type).
- * @tparam VALUE The type or fixed value type to check.
+ * @tparam RefType The reference type (usually a native type).
+ * @tparam Type The type or fixed value type to check.
  *
  * @example
  * @code
@@ -33,8 +33,8 @@ namespace BIC
  * static_assert(!BIC::MutOrFixed<Size, double>);   // ERROR: not T or Fixed<T, VALUE>
  * @endcode
  */
-template<typename T, typename VALUE>
-concept MutOrFixed = std::same_as<T, VALUE> or (IsFixed<VALUE>::value and std::same_as<T, typename VALUE::Type>);
+template<typename RefType, typename Type>
+concept MutOrFixed = std::same_as<RefType, Type> or (IsFixed<Type>::value and std::same_as<RefType, typename Type::Type>);
 
 } // namespace BIC
 
