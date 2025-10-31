@@ -10,4 +10,6 @@ int main()
     fmt::print("{}\n", ((a + BIC::fixed<long,1>) <= b) and BIC::fixed<bool, false>); 
     fmt::print("{}\n", BIC::isFixed(((a + BIC::fixed<long,1>) <= b) and BIC::fixed<bool, false>));
     fmt::print("{}\n", BIC::isFixed(BIC::isFixed(((a + BIC::fixed<long,1>) <= b) and BIC::fixed<bool, false>))); 
+    
+    return EXIT_SUCCESS;
 }

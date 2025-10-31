@@ -29,4 +29,6 @@ int main()
 	axpy(BIC::fixed<double,1.>, x.data(), BIC::fixed<size_t, N>, y.data());
 	
 	fmt::print("y = {}\n", fmt::join(y, ", "));
+	
+	return EXIT_SUCCESS;
 }

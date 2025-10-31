@@ -31,6 +31,8 @@
  * @endcode
  */
  
+#include <concepts>
+ 
 namespace BIC
 {
 	
@@ -67,6 +69,9 @@ struct Fixed
  */
 template<typename T, T VALUE> 
 Fixed<T,VALUE> fixed = {}; 
+
+template<std::integral I, I i> constexpr Fixed<I,i+1> next(const Fixed<I,i>) { return{}; }
+template<std::integral I, I i> constexpr Fixed<I,i-1> prev(const Fixed<I,i>) { return{}; }
 	
 } // BIC
 
