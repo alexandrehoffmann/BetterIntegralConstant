@@ -4,6 +4,8 @@
 #include <BIC/Fixed.hpp>
 #include <BIC/IsFixed.hpp>
 
+#include <concepts>
+
 namespace BIC
 {
 
