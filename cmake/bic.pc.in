@@ -1,0 +1,12 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@
+libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
+
+Name: BetterIntegralConstant
+Description: A header-only library providing better integral constants
+URL: https://github.com/alexandrehoffmann/BetterIntegralConstant
+Version: @PROJECT_VERSION@
+Requires: fmt
+Cflags: -I${includedir}
+Libs:
