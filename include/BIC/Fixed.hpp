@@ -78,7 +78,8 @@ Fixed<T,VALUE> fixed = {};
 
 template<std::integral I, I i>      constexpr Fixed<I,i+1> next(const Fixed<I,i>) { return{}; }
 template<std::integral I, I i>      constexpr Fixed<I,i-1> prev(const Fixed<I,i>) { return{}; }
-template<std::integral I, I i, I j> constexpr Fixed<I,j-i> prev(const Fixed<I,i>, const Fixed<I,j>) { return{}; }
+
+template<std::integral I, I i, I j> constexpr Fixed<I,j-i> distance(const Fixed<I,i>, const Fixed<I,j>) { return{}; }
 
 // ============================================================================
 // Arithmetic operators for Fixed
