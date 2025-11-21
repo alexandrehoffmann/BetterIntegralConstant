@@ -31,6 +31,8 @@
  * @endcode
  */
  
+#include <BIC/misc/ComparableTo.hpp>
+#include <type_traits> // for std::common_type_t
 #include <concepts>
  
 namespace BIC
@@ -70,61 +72,62 @@ struct Fixed
 template<typename T, T VALUE> 
 Fixed<T,VALUE> fixed = {}; 
 
-template<std::integral I, I i> constexpr Fixed<I,i+1> next(const Fixed<I,i>) { return{}; }
-template<std::integral I, I i> constexpr Fixed<I,i-1> prev(const Fixed<I,i>) { return{}; }
-	
-} // BIC
+// ============================================================================
+// Counter operators
+// ============================================================================
 
-#include <BIC/misc/ComparableTo.hpp>
-#include <type_traits> // for std::common_type_t
+template<std::integral I, I i>      constexpr Fixed<I,i+1> next(const Fixed<I,i>) { return{}; }
+template<std::integral I, I i>      constexpr Fixed<I,i-1> prev(const Fixed<I,i>) { return{}; }
+template<std::integral I, I i, I j> constexpr Fixed<I,j-i> prev(const Fixed<I,i>, const Fixed<I,j>) { return{}; }
 
 // ============================================================================
 // Arithmetic operators for Fixed
 // ============================================================================
 
 template<typename Lhs, Lhs lhs, typename Rhs, Rhs rhs> 
-constexpr BIC::Fixed<std::common_type_t<Lhs, Rhs>, lhs + rhs> operator+(const BIC::Fixed<Lhs, lhs>, const BIC::Fixed<Rhs, rhs>) { return {}; } 
+constexpr Fixed<std::common_type_t<Lhs, Rhs>, lhs + rhs> operator+(const Fixed<Lhs, lhs>, const Fixed<Rhs, rhs>) { return {}; } 
 
 template<typename Lhs, Lhs lhs, typename Rhs, Rhs rhs> 
-constexpr BIC::Fixed<std::common_type_t<Lhs, Rhs>, lhs - rhs> operator-(const BIC::Fixed<Lhs, lhs>, const BIC::Fixed<Rhs, rhs>) { return {}; }
+constexpr Fixed<std::common_type_t<Lhs, Rhs>, lhs - rhs> operator-(const Fixed<Lhs, lhs>, const Fixed<Rhs, rhs>) { return {}; }
 
 template<typename Lhs, Lhs lhs, typename Rhs, Rhs rhs> 
-constexpr BIC::Fixed<std::common_type_t<Lhs, Rhs>, lhs * rhs> operator*(const BIC::Fixed<Lhs, lhs>, const BIC::Fixed<Rhs, rhs>) { return {}; }
+constexpr Fixed<std::common_type_t<Lhs, Rhs>, lhs * rhs> operator*(const Fixed<Lhs, lhs>, const Fixed<Rhs, rhs>) { return {}; }
 
 template<typename Lhs, Lhs lhs, typename Rhs, Rhs rhs> 
-constexpr BIC::Fixed<std::common_type_t<Lhs, Rhs>, lhs / rhs> operator/(const BIC::Fixed<Lhs, lhs>, const BIC::Fixed<Rhs, rhs>) { return {}; } 
+constexpr Fixed<std::common_type_t<Lhs, Rhs>, lhs / rhs> operator/(const Fixed<Lhs, lhs>, const Fixed<Rhs, rhs>) { return {}; } 
 
 // ============================================================================
 // Logical operators for Fixed
 // ============================================================================
 
 template<typename T, T lhs, T rhs> 
-constexpr BIC::Fixed<bool, lhs && rhs> operator&&(const BIC::Fixed<T, lhs>, const BIC::Fixed<T,rhs>) { return {}; } 
+constexpr Fixed<bool, lhs && rhs> operator&&(const Fixed<T, lhs>, const Fixed<T,rhs>) { return {}; } 
 
 template<typename T, T lhs, T rhs> 
-constexpr BIC::Fixed<bool, lhs || rhs> operator||(const BIC::Fixed<T, lhs>, const BIC::Fixed<T,rhs>) { return {}; } 
+constexpr Fixed<bool, lhs || rhs> operator||(const Fixed<T, lhs>, const Fixed<T,rhs>) { return {}; } 
 
 // ============================================================================
 // Comparison operators for Fixed
 // ============================================================================
 
-template<typename Lhs, Lhs lhs, BIC::misc::ComparableTo<Lhs> Rhs, Rhs rhs> 
-constexpr BIC::Fixed<bool, lhs < rhs> operator<(const BIC::Fixed<Lhs, lhs>, const BIC::Fixed<Rhs,rhs>) { return {}; } 
+template<typename Lhs, Lhs lhs, misc::ComparableTo<Lhs> Rhs, Rhs rhs> 
+constexpr Fixed<bool, lhs < rhs> operator<(const Fixed<Lhs, lhs>, const Fixed<Rhs,rhs>) { return {}; } 
 
-template<typename Lhs, Lhs lhs, BIC::misc::ComparableTo<Lhs> Rhs, Rhs rhs> 
-constexpr BIC::Fixed<bool, lhs <= rhs> operator<=(const BIC::Fixed<Lhs, lhs>, const BIC::Fixed<Rhs,rhs>) { return {}; } 
+template<typename Lhs, Lhs lhs, misc::ComparableTo<Lhs> Rhs, Rhs rhs> 
+constexpr Fixed<bool, lhs <= rhs> operator<=(const Fixed<Lhs, lhs>, const Fixed<Rhs,rhs>) { return {}; } 
 
-template<typename Lhs, Lhs lhs, BIC::misc::ComparableTo<Lhs> Rhs, Rhs rhs> 
-constexpr BIC::Fixed<bool, (lhs > rhs)> operator>(const BIC::Fixed<Lhs, lhs>, const BIC::Fixed<Rhs,rhs>) { return {}; } 
+template<typename Lhs, Lhs lhs, misc::ComparableTo<Lhs> Rhs, Rhs rhs> 
+constexpr Fixed<bool, (lhs > rhs)> operator>(const Fixed<Lhs, lhs>, const Fixed<Rhs,rhs>) { return {}; } 
 
-template<typename Lhs, Lhs lhs, BIC::misc::ComparableTo<Lhs> Rhs, Rhs rhs> 
-constexpr BIC::Fixed<bool, (lhs >= rhs)> operator>=(const BIC::Fixed<Lhs, lhs>, const BIC::Fixed<Rhs,rhs>) { return {}; } 
+template<typename Lhs, Lhs lhs, misc::ComparableTo<Lhs> Rhs, Rhs rhs> 
+constexpr Fixed<bool, (lhs >= rhs)> operator>=(const Fixed<Lhs, lhs>, const Fixed<Rhs,rhs>) { return {}; } 
 
-template<typename Lhs, Lhs lhs, BIC::misc::ComparableTo<Lhs> Rhs, Rhs rhs> 
-constexpr BIC::Fixed<bool, lhs == rhs> operator==(const BIC::Fixed<Lhs, lhs>, const BIC::Fixed<Rhs,rhs>) { return {}; } 
+template<typename Lhs, Lhs lhs, misc::ComparableTo<Lhs> Rhs, Rhs rhs> 
+constexpr Fixed<bool, lhs == rhs> operator==(const Fixed<Lhs, lhs>, const Fixed<Rhs,rhs>) { return {}; } 
 
-template<typename Lhs, Lhs lhs, BIC::misc::ComparableTo<Lhs> Rhs, Rhs rhs> 
-constexpr BIC::Fixed<bool, lhs != rhs> operator!=(const BIC::Fixed<Lhs, lhs>, const BIC::Fixed<Rhs,rhs>) { return {}; } 
+template<typename Lhs, Lhs lhs, misc::ComparableTo<Lhs> Rhs, Rhs rhs> 
+constexpr Fixed<bool, lhs != rhs> operator!=(const Fixed<Lhs, lhs>, const Fixed<Rhs,rhs>) { return {}; } 
 
+} // BIC
 
 #endif // BIC_FIXED_HPP
