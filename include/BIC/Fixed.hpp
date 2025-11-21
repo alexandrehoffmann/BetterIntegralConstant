@@ -97,6 +97,9 @@ constexpr Fixed<std::common_type_t<Lhs, Rhs>, lhs * rhs> operator*(const Fixed<L
 template<typename Lhs, Lhs lhs, typename Rhs, Rhs rhs> 
 constexpr Fixed<std::common_type_t<Lhs, Rhs>, lhs / rhs> operator/(const Fixed<Lhs, lhs>, const Fixed<Rhs, rhs>) { return {}; } 
 
+template<typename T, T value>
+constexpr Fixed<T, -value> operator-(const Fixed<T, value>) { return {}; }
+
 // ============================================================================
 // Logical operators for Fixed
 // ============================================================================
