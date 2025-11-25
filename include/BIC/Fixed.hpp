@@ -70,7 +70,7 @@ struct Fixed
  * @endcode
  */
 template<typename T, T VALUE> 
-Fixed<T,VALUE> fixed = {}; 
+constexpr Fixed<T,VALUE> fixed = {}; 
 
 // ============================================================================
 // Counter operators

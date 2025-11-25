@@ -1,0 +1,103 @@
+#ifndef BIC_FIXED_ARRAY_HPP
+#define BIC_FIXED_ARRAY_HPP
+
+#include <BIC/Fixed.hpp>
+
+namespace BIC
+{
+
+/**
+ * @brief A compile-time fixed array constructed from a parameter pack.
+ *
+ * This template represents an array of constant values known at compile time.
+ * It exposes an `std::array` interface (conversion operator, iterators, indexing)
+ * and stores all values in static constexpr form.
+ *
+ * @tparam T       Scalar type of the array elements.
+ * @tparam VALUES  Parameter pack of values held by the array.
+ */
+template<typename T, T... VALUES> 
+struct FixedArray
+{
+	using Scalar   = T;                                ///<  @brief Scalar value type.
+	using Type     = std::array<T, sizeof...(VALUES)>; ///<  @brief The underlying std::array type.
+	using Iterator = typename Type::const_iterator;    ///<  @brief Const iterator type for the underlying array.
+	
+	constexpr operator Type() const { return {VALUES...}; }  ///<  @brief Implicit conversion operator to the underlying std::array.
+	
+	static constexpr Type   values = {VALUES...};       ///<  @brief Compile-time array of the stored values.
+	static constexpr size_t size   = sizeof...(VALUES); ///<  @brief Number of stored elements.
+	
+	constexpr const Scalar& operator[](const size_t i) const { return values[i]; }
+	
+	constexpr Iterator begin() const { return std::begin(values); } 
+	constexpr Iterator end()   const { return std::end(values); }
+	
+	constexpr Iterator cbegin() const { return std::begin(values); } 
+	constexpr Iterator cend()   const { return std::end(values); } 
+};
+
+/**
+ * @brief Global constexpr instance for simple creation of FixedArray objects.
+ *
+ * Example:
+ * @code
+ * auto arr = fixedArray<int,1,2,3>;
+ * @endcode
+ */
+template<typename T, T... VALUES> 
+constexpr FixedArray<T, VALUES...> fixedArray = {};
+
+// ============================================================================
+// Helper functions
+// ============================================================================
+
+/**
+ * @brief Append a scalar value to the back of a FixedArray.
+ *
+ * @tparam T       Scalar type.
+ * @tparam newBack Value to append.
+ * @tparam values  Existing array values.
+ *
+ * @param array A FixedArray of existing values.
+ * @param value A Fixed<T,newBack> wrapper containing the value to append.
+ * @return A new FixedArray with `newBack` appended at the end.
+ */
+template<typename T, T newBack, T... values> 
+FixedArray<T, values..., newBack> append(const FixedArray<T, values...>, Fixed<T,newBack>) { return {}; }
+
+/**
+ * @brief Append a scalar value to the front of a FixedArray.
+ *
+ * @tparam T        Scalar type.
+ * @tparam newFront Value to prepend.
+ * @tparam values   Existing array values.
+ *
+ * @param value A Fixed<T,newFront> wrapper containing the value to prepend.
+ * @param array A FixedArray of existing values.
+ * @return A new FixedArray with `newFront` inserted at the beginning.
+ */
+template<typename T, T newFront, T... values> 
+FixedArray<T, newFront, values...> append(Fixed<T,newFront>, const FixedArray<T, values...>) { return {}; }
+
+namespace detail
+{
+	template<size_t I, typename T, T front, T... values> Fixed<T,front>                                    getHelper(FixedArray<T, front, values...>) requires(I == 0 and I < 1 + sizeof...(values)) { return {}; }
+	template<size_t I, typename T, T front, T... values> decltype(getHelper<I-1>(fixedArray<T,values...>)) getHelper(FixedArray<T, front, values...>) requires(I != 0 and I < 1 + sizeof...(values)) { return get<I-1>(fixedArray<T,values...>); }
+} // namespace detail
+
+/**
+ * @brief Retrieve an element at index `I` from a FixedArray.
+ *
+ * @tparam I      Index to retrieve (must be zero).
+ * @tparam T      Scalar type.
+ * @tparam values elements.
+ *
+ * @param array The FixedArray instance (passed for type deduction).
+ */
+template<size_t I, typename T, T... values> decltype(detail::getHelper<I>(fixedArray<T,values...>)) get(FixedArray<T, values...> array) requires(I < sizeof...(values)) { return detail::getHelper<I>(array); }
+
+} // namespace BIC
+
+#endif // BIC_FIXED_ARRAY_HPP
+
