@@ -61,7 +61,7 @@ constexpr FixedArray<T, VALUES...> fixedArray = {};
  * @brief Global constexpr instance for creating `FixedIndices`.
  */
 template<size_t... INDICES>
-constexpr FixedIndices fixedIndices = {};
+constexpr FixedIndices<INDICES...> fixedIndices = {};
 
 // ============================================================================
 // Helper functions
