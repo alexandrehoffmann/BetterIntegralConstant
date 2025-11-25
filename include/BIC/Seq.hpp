@@ -35,53 +35,64 @@ struct SeqHelper<T, start, stop, step>
 } // namespace detail
 
 /**
- * @brief Alias template for generating a compile-time numeric sequence.
+ * @brief Generate a compile-time numeric sequence of type `T`.
  *
- * Produces a `FixedArray<T,...>` representing a sequence starting at `start`,
- * increasing by `step`, and stopping before/at `stop`, depending on the
- * recursion termination logic defined in `SeqHelper`.
+ * Produces a `FixedArray<T,...>` containing a compile-time constant sequence
+ * starting at `start`, incrementing by `step`, and terminating according to
+ * the rules documented in `SeqHelper`.
+ *
+ * Example:
+ * @code
+ * using S = BIC::Seq<int, 2, 10, 3>; // S = {2, 5, 8}
+ * @endcode
  *
  * @tparam T     Scalar type.
  * @tparam start Starting value.
- * @tparam stop  Limit value used by recursive termination conditions.
+ * @tparam stop  Boundary used for recursion termination.
  * @tparam step  Step increment (default 1).
  */
 template<typename T, T start, T stop, T step=1> 
 using Seq  = typename detail::SeqHelper<T, start, stop, step>::Type;
 
 /**
- * @brief Convenience alias for sequences beginning at zero.
+ * @brief Generate a compile-time sequence of indices (`size_t`).
  *
- * Equivalent to `Seq<T, 0, stop, step>`.
+ * Equivalent to `Seq<size_t, start, stop, step>` but shorter and clearer
+ * when specifically working with index sequences in templates.
  *
- * @tparam T     Scalar type.
- * @tparam stop  Bound value for termination.
+ * Example:
+ * @code
+ * using I = BIC::IndexSeq<0, 5>; // I = {0,1,2,3,4}
+ * @endcode
+ *
+ * @tparam start First index.
+ * @tparam stop  Upper boundary for termination.
  * @tparam step  Step increment (default 1).
  */
-template<typename T, T stop, T step=1>
-using Seq0 = typename detail::SeqHelper<T, 0, stop, step>::Type;
+template<size_t start, size_t stop, size_t step=1> 
+using IndexSeq = typename detail::SeqHelper<size_t, start, stop, step>::Type;
 
 /**
- * @brief Global constexpr instance for easy creation of a compile-time sequence.
+ * @brief Global constexpr instance for compile-time numeric sequences.
  *
- * Usage example:
+ * Example:
  * @code
- * auto s = seq<int, 2, 10, 2>; // produces {2,4,6,8}
+ * auto s = BIC::seq<int, 2, 10, 2>; // produces {2,4,6,8}
  * @endcode
  */
 template<typename T, T start, T stop, T step=1>
 constexpr Seq<T,start,stop, step> seq = {};
 
 /**
- * @brief Global constexpr instance for sequences starting at zero.
+ * @brief Global constexpr instance for compile-time index sequences.
  *
- * Usage example:
+ * Example:
  * @code
- * auto s = seq0<int, 5>; // produces {0,1,2,3,4}
+ * auto idx = BIC::indexSeq<0, 5>; // produces {0,1,2,3,4}
  * @endcode
  */
-template<typename T, T stop, T step=1>
-constexpr Seq0<T,stop, step> seq0 = {};
+template<size_t start, size_t stop, size_t step=1>
+constexpr IndexSeq<start,stop, step> indexSeq = {};
 
 } // namespace BIC
 

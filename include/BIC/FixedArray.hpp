@@ -9,12 +9,13 @@ namespace BIC
 /**
  * @brief A compile-time fixed array constructed from a parameter pack.
  *
- * This template represents an array of constant values known at compile time.
- * It exposes an `std::array` interface (conversion operator, iterators, indexing)
- * and stores all values in static constexpr form.
+ * `FixedArray` represents a constant array whose contents are fully known at
+ * compile time. It provides a lightweight wrapper around `std::array`,
+ * supporting iteration, indexing, and implicit conversion to the underlying
+ * `std::array` type.
  *
  * @tparam T       Scalar type of the array elements.
- * @tparam VALUES  Parameter pack of values held by the array.
+ * @tparam VALUES  Parameter pack of compile-time constant values.
  */
 template<typename T, T... VALUES> 
 struct FixedArray
@@ -38,6 +39,14 @@ struct FixedArray
 };
 
 /**
+ * @brief Convenience alias for a compile-time array of `size_t` indices.
+ *
+ * Useful for meta-programming utilities that operate on index lists.
+ */
+template<size_t... INDICES>
+using FixedIndices = FixedArray<size_t, INDICES...>; 
+
+/**
  * @brief Global constexpr instance for simple creation of FixedArray objects.
  *
  * Example:
@@ -47,6 +56,12 @@ struct FixedArray
  */
 template<typename T, T... VALUES> 
 constexpr FixedArray<T, VALUES...> fixedArray = {};
+
+/**
+ * @brief Global constexpr instance for creating `FixedIndices`.
+ */
+template<size_t... INDICES>
+constexpr FixedIndices fixedIndices = {};
 
 // ============================================================================
 // Helper functions
