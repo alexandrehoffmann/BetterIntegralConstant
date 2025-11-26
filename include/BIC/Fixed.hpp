@@ -1,36 +1,6 @@
 #ifndef BIC_FIXED_HPP
 #define BIC_FIXED_HPP
 
-/**
- * @file Fixed.hpp
- * @brief Defines a compile-time constant wrapper type and arithmetic operators.
- * @date 2025
- * @version 1.0
- *
- * The `BIC::Fixed` struct provides a lightweight and strongly typed mechanism
- * for representing constant values as distinct types at compile time.
- * 
- * A `Fixed<T, VALUE>` behaves like a `constexpr T` but also carries its value
- * in its type — allowing powerful template metaprogramming and symbolic
- * compile-time arithmetic.
- *
- * This header also defines constexpr operator overloads that allow `Fixed`
- * instances to be combined with other `Fixed` constants, yielding new
- * `Fixed` types that encode the result in their template parameters.
- *
- * Example:
- * @code
- * using A = BIC::Fixed<int, 3>;
- * using B = BIC::Fixed<int, 5>;
- * 
- * constexpr auto sum = A{} + B{};     // Fixed<int, 8>
- * constexpr auto cmp = (A{} < B{});   // Fixed<bool, true>
- * 
- * static_assert(sum.value == 8);
- * static_assert(decltype(cmp)::value); // true
- * @endcode
- */
- 
 #include <BIC/misc/ComparableTo.hpp>
 #include <type_traits> // for std::common_type_t
 #include <concepts>

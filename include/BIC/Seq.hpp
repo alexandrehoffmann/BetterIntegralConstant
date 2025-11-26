@@ -9,27 +9,18 @@ namespace BIC
 namespace detail
 {
     
-template<typename T, T start, T stop, T step> struct SeqHelper;
+template<typename T, T start, T stop, T step, T... values> struct SeqHelper;
 
-template<typename T, T start, T stop, T step> requires(start + step < stop)
-struct SeqHelper<T, start, stop, step>
+template<typename T, T start, T stop, T step, T... values> requires(start + step < stop)
+struct SeqHelper<T, start, stop, step, values...>
 {
-    using Head = Fixed<T,start>;
-    using Tail = typename SeqHelper<T, start + step, stop, step>::Type;
-    
-    using Type = decltype(append(Head{}, Tail{}));
+    using Type = typename SeqHelper<T, start + step, stop, step, values..., start>::Type;
 };
 
-template<typename T, T start, T stop, T step> requires(start + step > stop)
-struct SeqHelper<T, start, stop, step>
+template<typename T, T start, T stop, T step, T... values> requires(start + step >= stop)
+struct SeqHelper<T, start, stop, step, values...>
 {
-    using Type = FixedArray<T, start, stop-1>;
-};
-
-template<typename T, T start, T stop, T step> requires(start + step == stop)
-struct SeqHelper<T, start, stop, step>
-{
-    using Type = FixedArray<T, start>;
+    using Type = FixedArray<T, values..., start>;
 };
 
 } // namespace detail

@@ -3,6 +3,9 @@
 
 #include <BIC/Fixed.hpp>
 
+#include <array>
+#include <cstddef> // for size_t
+
 namespace BIC
 {
 
@@ -26,8 +29,8 @@ struct FixedArray
 	
 	constexpr operator Type() const { return {VALUES...}; }  ///<  @brief Implicit conversion operator to the underlying std::array.
 	
-	static constexpr Type   values = {VALUES...};       ///<  @brief Compile-time array of the stored values.
-	static constexpr size_t size   = sizeof...(VALUES); ///<  @brief Number of stored elements.
+	static constexpr Type                             values = {VALUES...}; ///<  @brief Compile-time array of the stored values.
+	static constexpr Fixed<size_t, sizeof...(VALUES)> size   = {};          ///<  @brief Number of stored elements.
 	
 	constexpr const Scalar& operator[](const size_t i) const { return values[i]; }
 	
@@ -97,9 +100,32 @@ FixedArray<T, newFront, values...> append(Fixed<T,newFront>, const FixedArray<T,
 
 namespace detail
 {
-	template<size_t I, typename T, T front, T... values> Fixed<T,front>                                    getHelper(FixedArray<T, front, values...>) requires(I == 0 and I < 1 + sizeof...(values)) { return {}; }
-	template<size_t I, typename T, T front, T... values> decltype(getHelper<I-1>(fixedArray<T,values...>)) getHelper(FixedArray<T, front, values...>) requires(I != 0 and I < 1 + sizeof...(values)) { return get<I-1>(fixedArray<T,values...>); }
+	template<size_t I, typename T, T... VALUES> struct FixedArrayElementHelper;
+
+    template<size_t I, typename T, T FIRST_VALUE, T... OTHER_VALUES> requires(I != 0)
+    struct FixedArrayElementHelper<I, T, FIRST_VALUE, OTHER_VALUES...>
+    {
+        using Type = typename FixedArrayElementHelper<I-1, T, OTHER_VALUES...>::Type;
+    };
+
+    template<size_t I, typename T, T FIRST_VALUE, T... OTHER_VALUES> requires(I == 0)
+    struct FixedArrayElementHelper<I, T, FIRST_VALUE, OTHER_VALUES...>
+    {
+        using Type = Fixed<T, FIRST_VALUE>;
+    };
 } // namespace detail
+
+/**
+ * @brief Retrieve the type of the `I`th Fixed from a FixedArray.
+ *
+ * @tparam I      Index to retrieve (must be zero).
+ * @tparam T      Scalar type.
+ * @tparam values elements.
+ *
+ * @param array The FixedArray instance (passed for type deduction).
+ */
+template<size_t I, typename T, T... VALUES>
+using FixedArrayElement = typename detail::FixedArrayElementHelper<I, T, VALUES...>::Type;
 
 /**
  * @brief Retrieve an element at index `I` from a FixedArray.
@@ -110,7 +136,9 @@ namespace detail
  *
  * @param array The FixedArray instance (passed for type deduction).
  */
-template<size_t I, typename T, T... values> decltype(detail::getHelper<I>(fixedArray<T,values...>)) get(FixedArray<T, values...> array) requires(I < sizeof...(values)) { return detail::getHelper<I>(array); }
+template<size_t I, typename T, T... VALUES>
+FixedArrayElement<I, T, VALUES...> get(const FixedArray<T, VALUES...>) { return {}; }
+
 
 } // namespace BIC
 
