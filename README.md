@@ -1,5 +1,7 @@
 # Better Integral Constant (BIC)
 
+## Fixed type
+
 A header-only library providing a `Fixed` type which represents a compile-time fixed constant (similar to integral constant).
 A `Fixed` can be implicitly converted to the underlying type and supports arithmetic, logical and comparaison operators.
 Obviously arithmetic operations between two `Fixed` returns a `Fixed`.
@@ -64,4 +66,21 @@ Our kernel can be called with either native types or `BIC::Fixed`:
 	
 	axpy(1, x.data(), N, y.data()); 
 	axpy(BIC::fixed<double,1.>, x.data(), BIC::fixed<size_t, N>, y.data());
+```
+
+## FixedArray and Sequences
+
+```cpp
+    fmt::print("Printing a sequence : {}\n", fmt::join(BIC::seq<size_t,0, 10, 3>, ", "));
+	
+	fmt::print("Iterating over a range from Fixed<int,0> to Fixed<int,9>\n");
+    BIC::foreach(BIC::fixed<int,0>, BIC::fixed<int,10>, [](const auto i)
+    {
+        fmt::print("i = {} is i fixed ? {}\n", i, isFixed(i));
+    });
+	fmt::print("Iterating over the elements of a FixedArray<int,2,4,3,-1,9>\n");
+    BIC::foreach(BIC::fixedArray<int,2,4,3,-1,9>, [](const auto i)
+    {
+        fmt::print("i = {} is i fixed ? {}\n", i, isFixed(i));
+    });
 ```
