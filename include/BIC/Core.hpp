@@ -1,3 +1,4 @@
+#include <BIC/Reversed.hpp>
 #include <BIC/FixedArray.hpp>
 #include <BIC/Fixed.hpp>
 #include <BIC/Formater.hpp>

@@ -22,4 +22,9 @@ int main()
     {
         fmt::print("i = {} is i fixed ? {}\n", i, isFixed(i));
     });
+	fmt::print("Iterating over the elements of a reversed FixedArray<int,2,4,3,-1,9>\n");
+    BIC::foreach(reversed(BIC::fixedArray<int,2,4,3,-1,9>), [](const auto i)
+    {
+        fmt::print("i = {} is i fixed ? {}\n", i, isFixed(i));
+    });
 }

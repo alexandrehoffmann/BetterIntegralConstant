@@ -83,7 +83,7 @@ constexpr FixedIndices<INDICES...> fixedIndices = {};
  * @return A new FixedArray with `newBack` appended at the end.
  */
 template<typename T, T newBack, T... values> 
-FixedArray<T, values..., newBack> append(const FixedArray<T, values...>, Fixed<T,newBack>) { return {}; }
+constexpr FixedArray<T, values..., newBack> append(const FixedArray<T, values...>, Fixed<T,newBack>) { return {}; }
 
 /**
  * @brief Append a scalar value to the front of a FixedArray.
@@ -97,7 +97,7 @@ FixedArray<T, values..., newBack> append(const FixedArray<T, values...>, Fixed<T
  * @return A new FixedArray with `newFront` inserted at the beginning.
  */
 template<typename T, T newFront, T... values> 
-FixedArray<T, newFront, values...> append(Fixed<T,newFront>, const FixedArray<T, values...>) { return {}; }
+constexpr FixedArray<T, newFront, values...> append(Fixed<T,newFront>, const FixedArray<T, values...>) { return {}; }
 
 namespace detail
 {

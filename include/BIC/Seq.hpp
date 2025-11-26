@@ -61,7 +61,7 @@ struct SeqHelper<T, start, stop, step, values...>
  * @tparam step  Step increment (default 1).
  */
 template<typename T, T start, T stop, T step=1> 
-using Seq  = typename detail::SeqHelper<T, start, stop, step>::Type;
+using Seq = typename detail::SeqHelper<T, start, stop, step>::Type;
 
 /**
  * @brief Generate a compile-time sequence of indices (`size_t`).
