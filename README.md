@@ -78,8 +78,18 @@ Our kernel can be called with either native types or `BIC::Fixed`:
     {
         fmt::print("i = {} is i fixed ? {}\n", i, isFixed(i));
     });
+	fmt::print("Iterating over a reversed range from Fixed<int,9> to Fixed<int,0>\n");
+    BIC::foreach(BIC::fixed<int,9>, BIC::fixed<int,0>, BIC::fixed<int,-1>, [](const auto i)
+    {
+        fmt::print("i = {} is i fixed ? {}\n", i, isFixed(i));
+    });
 	fmt::print("Iterating over the elements of a FixedArray<int,2,4,3,-1,9>\n");
     BIC::foreach(BIC::fixedArray<int,2,4,3,-1,9>, [](const auto i)
+    {
+        fmt::print("i = {} is i fixed ? {}\n", i, isFixed(i));
+    });
+	fmt::print("Iterating over the elements of a reversed FixedArray<int,2,4,3,-1,9>\n");
+    BIC::foreach(reversed(BIC::fixedArray<int,2,4,3,-1,9>), [](const auto i)
     {
         fmt::print("i = {} is i fixed ? {}\n", i, isFixed(i));
     });
