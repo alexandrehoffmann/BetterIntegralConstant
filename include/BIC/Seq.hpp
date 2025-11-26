@@ -17,10 +17,16 @@ struct SeqHelper<T, start, stop, step, values...>
     using Type = typename SeqHelper<T, start + step, stop, step, values..., start>::Type;
 };
 
-template<typename T, T start, T stop, T step, T... values> requires(start + step >= stop)
+template<typename T, T start, T stop, T step, T... values> requires(start < stop and start + step >= stop)
 struct SeqHelper<T, start, stop, step, values...>
 {
     using Type = FixedArray<T, values..., start>;
+};
+
+template<typename T, T start, T stop, T step, T... values> requires(start == stop)
+struct SeqHelper<T, start, stop, step, values...>
+{
+    using Type = FixedArray<T, values...>;
 };
 
 } // namespace detail
