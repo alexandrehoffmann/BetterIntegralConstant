@@ -31,6 +31,7 @@ struct FixedArray
 	
 	static constexpr Type                             values = {VALUES...}; ///<  @brief Compile-time array of the stored values.
 	static constexpr Fixed<size_t, sizeof...(VALUES)> size   = {};          ///<  @brief Number of stored elements.
+	static constexpr Fixed<bool, size == 0>           empty  = {};
 	
 	constexpr const Scalar& operator[](const size_t i) const { return values[i]; }
 	
