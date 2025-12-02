@@ -99,6 +99,20 @@ FixedArray<T, values..., newBack> append(const FixedArray<T, values...>, Fixed<T
 template<typename T, T newFront, T... values> 
 FixedArray<T, newFront, values...> append(Fixed<T,newFront>, const FixedArray<T, values...>) { return {}; }
 
+/**
+ * @brief Concatenate two FixedArray.
+ *
+ * @tparam T         Scalar type.
+ * @tparam lhsValues Values to prepend.
+ * @tparam rhsValues Values to append.
+ *
+ * @param value A FixedArray containing the values to prepend.
+ * @param array A FixedArray containing the values to append.
+ * @return A new FixedArray with `newFront` inserted at the beginning.
+ */
+template<typename T, T... lhsValues, T... rhsValues>
+FixedArray<T, lhsValues..., rhsValues...> cat(FixedArray<T, lhsValues...> /* lhs */, FixedArray<T, rhsValues...> /* rhs */) { return {}; }
+
 namespace detail
 {
 	template<size_t I, typename T, T... VALUES> struct FixedArrayElementHelper;
