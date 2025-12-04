@@ -72,32 +72,46 @@ constexpr FixedIndices<INDICES...> fixedIndices = {};
 // ============================================================================
 
 /**
- * @brief Append a scalar value to the back of a FixedArray.
+ * @brief Concatenate two Fixed.
  *
- * @tparam T       Scalar type.
- * @tparam newBack Value to append.
- * @tparam values  Existing array values.
+ * @tparam T         Scalar type.
+ * @tparam lhsValue  Value to prepend.
+ * @tparam rhsValue  Value to append.
  *
- * @param array A FixedArray of existing values.
- * @param value A Fixed<T,newBack> wrapper containing the value to append.
- * @return A new FixedArray with `newBack` appended at the end.
+ * @param value A Fixed containing the value to prepend.
+ * @param array A Fixed containing the value to append.
+ * @return A new `FixedArray<T, lhsValue, rhsValue>` inserted at the end.
  */
-template<typename T, T newBack, T... values> 
-FixedArray<T, values..., newBack> append(const FixedArray<T, values...>, Fixed<T,newBack>) { return {}; }
+template<typename T, T lhsValue, T rhsValue>
+FixedArray<T, lhsValue, rhsValue> cat(const Fixed<T, lhsValue>, const Fixed<T, rhsValue>) { return {}; } 
 
 /**
- * @brief Append a scalar value to the front of a FixedArray.
+ * @brief Concatenate a FixedArray and a Fixed.
  *
- * @tparam T        Scalar type.
- * @tparam newFront Value to prepend.
- * @tparam values   Existing array values.
+ * @tparam T         Scalar type.
+ * @tparam values    Values to prepend.
+ * @tparam newBack   Value to append.
  *
- * @param value A Fixed<T,newFront> wrapper containing the value to prepend.
- * @param array A FixedArray of existing values.
+ * @param value A FixedArray containing the values to prepend.
+ * @param array A Fixed containing the value to append.
+ * @return A new FixedArray with `newBack` inserted at the end.
+ */
+template<typename T, T newBack, T... values> 
+FixedArray<T, values..., newBack> cat(const FixedArray<T, values...>, Fixed<T, newBack>) { return {}; }
+
+/**
+ * @brief Concatenate a Fixed and a FixedArray.
+ *
+ * @tparam T         Scalar type.
+ * @tparam newFront  Value to prepend.
+ * @tparam values    Values to append.
+ *
+ * @param value A Fixed containing the value to prepend.
+ * @param array A FixedArray containing the values to append.
  * @return A new FixedArray with `newFront` inserted at the beginning.
  */
 template<typename T, T newFront, T... values> 
-FixedArray<T, newFront, values...> append(Fixed<T,newFront>, const FixedArray<T, values...>) { return {}; }
+FixedArray<T, newFront, values...> cat(Fixed<T,newFront>, const FixedArray<T, values...>) { return {}; }
 
 /**
  * @brief Concatenate two FixedArray.
@@ -108,7 +122,7 @@ FixedArray<T, newFront, values...> append(Fixed<T,newFront>, const FixedArray<T,
  *
  * @param value A FixedArray containing the values to prepend.
  * @param array A FixedArray containing the values to append.
- * @return A new FixedArray with `newFront` inserted at the beginning.
+ * @return A new FixedArray with `lhsValues` inserted at the beginning.
  */
 template<typename T, T... lhsValues, T... rhsValues>
 FixedArray<T, lhsValues..., rhsValues...> cat(FixedArray<T, lhsValues...> /* lhs */, FixedArray<T, rhsValues...> /* rhs */) { return {}; }
