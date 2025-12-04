@@ -2,6 +2,7 @@
 #define BIC_FIXED_ARRAY_HPP
 
 #include <BIC/Fixed.hpp>
+#include <BIC/FixedArrayElement.hpp>
 
 #include <array>
 #include <cstddef> // for size_t
@@ -26,7 +27,9 @@ struct FixedArray
 	using Scalar   = T;                                ///<  @brief Scalar value type.
 	using Type     = std::array<T, sizeof...(VALUES)>; ///<  @brief The underlying std::array type.
 	using Iterator = typename Type::const_iterator;    ///<  @brief Const iterator type for the underlying array.
-	
+
+	template<size_t I> using IthElement = FixedArrayElement<I, T, VALUES...>;
+
 	constexpr operator Type() const { return {VALUES...}; }  ///<  @brief Implicit conversion operator to the underlying std::array.
 	
 	static constexpr Type                             values = {VALUES...}; ///<  @brief Compile-time array of the stored values.
@@ -34,6 +37,8 @@ struct FixedArray
 	static constexpr Fixed<bool, size == 0>           empty  = {};
 	
 	constexpr const Scalar& operator[](const size_t i) const { return values[i]; }
+
+	template<size_t I> constexpr IthElement<I> operator[](const Fixed<size_t, I>) const { return {}; }
 	
 	constexpr Iterator begin() const { return std::begin(values); } 
 	constexpr Iterator end()   const { return std::end(values); }
@@ -70,6 +75,18 @@ constexpr FixedIndices<INDICES...> fixedIndices = {};
 // ============================================================================
 // Helper functions
 // ============================================================================
+
+/**
+ * @brief Retrieve an element at index `I` from a FixedArray.
+ *
+ * @tparam I      Index to retrieve (must be zero).
+ * @tparam T      Scalar type.
+ * @tparam values elements.
+ *
+ * @param array The FixedArray instance (passed for type deduction).
+ */
+template<size_t I, typename T, T... VALUES>
+FixedArrayElement<I, T, VALUES...> get(const FixedArray<T, VALUES...>) { return {}; }
 
 /**
  * @brief Concatenate two Fixed.
@@ -126,48 +143,6 @@ FixedArray<T, newFront, values...> cat(Fixed<T,newFront>, const FixedArray<T, va
  */
 template<typename T, T... lhsValues, T... rhsValues>
 FixedArray<T, lhsValues..., rhsValues...> cat(FixedArray<T, lhsValues...> /* lhs */, FixedArray<T, rhsValues...> /* rhs */) { return {}; }
-
-namespace detail
-{
-	template<size_t I, typename T, T... VALUES> struct FixedArrayElementHelper;
-
-    template<size_t I, typename T, T FIRST_VALUE, T... OTHER_VALUES> requires(I != 0)
-    struct FixedArrayElementHelper<I, T, FIRST_VALUE, OTHER_VALUES...>
-    {
-        using Type = typename FixedArrayElementHelper<I-1, T, OTHER_VALUES...>::Type;
-    };
-
-    template<size_t I, typename T, T FIRST_VALUE, T... OTHER_VALUES> requires(I == 0)
-    struct FixedArrayElementHelper<I, T, FIRST_VALUE, OTHER_VALUES...>
-    {
-        using Type = Fixed<T, FIRST_VALUE>;
-    };
-} // namespace detail
-
-/**
- * @brief Retrieve the type of the `I`th Fixed from a FixedArray.
- *
- * @tparam I      Index to retrieve (must be zero).
- * @tparam T      Scalar type.
- * @tparam values elements.
- *
- * @param array The FixedArray instance (passed for type deduction).
- */
-template<size_t I, typename T, T... VALUES>
-using FixedArrayElement = typename detail::FixedArrayElementHelper<I, T, VALUES...>::Type;
-
-/**
- * @brief Retrieve an element at index `I` from a FixedArray.
- *
- * @tparam I      Index to retrieve (must be zero).
- * @tparam T      Scalar type.
- * @tparam values elements.
- *
- * @param array The FixedArray instance (passed for type deduction).
- */
-template<size_t I, typename T, T... VALUES>
-FixedArrayElement<I, T, VALUES...> get(const FixedArray<T, VALUES...>) { return {}; }
-
 
 } // namespace BIC
 
