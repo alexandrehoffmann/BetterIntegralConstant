@@ -3,6 +3,8 @@
 
 #include <BIC/Fixed.hpp>
 
+#include <cstddef>
+
 namespace BIC
 {
 
