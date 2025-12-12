@@ -110,6 +110,6 @@ double getLagrangePolynomial(const double t, const BIC::Fixed<int, I> i, const B
 template<int I, int... Js> 
 double getLagrangePolynomial(const double t, const BIC::Fixed<int, I> i, const BIC::FixedArray<int, Js...> /* js */) const 
 { 
-	return ((double(t + stencilCenter - Js) / double(i - Js)) * ...); 
+	return ((double(t - Js) / double(i - Js)) * ...); 
 }
 ```
