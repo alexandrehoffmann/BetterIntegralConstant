@@ -76,6 +76,20 @@ constexpr FixedIndices<INDICES...> fixedIndices = {};
 // Helper functions
 // ============================================================================
 
+namespace detail
+{
+	
+template<typename T, T VALUE, T FIRST_VALUE, T... OTHER_VALUES>
+struct FixedArrayContains : Fixed<bool, VALUE == FIRST_VALUE or FixedArrayContains<T, VALUE, OTHER_VALUES...>::value> {};
+
+template<typename T, T VALUE, T FIRST_VALUE>
+struct FixedArrayContains<T, VALUE, FIRST_VALUE> : Fixed<bool, VALUE == FIRST_VALUE> {};
+	
+} // namespace detail
+
+template<typename T, T VALUE, T... VALUES>
+Fixed< bool, detail::FixedArrayContains<T, VALUE, VALUES...>::value > contains(const FixedArray<T, VALUES...>, const Fixed<T, VALUE>) { return {}; }
+
 /**
  * @brief Retrieve an element at index `I` from a FixedArray.
  *
