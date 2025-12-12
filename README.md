@@ -108,8 +108,9 @@ double getLagrangePolynomial(const double t, const BIC::Fixed<int, I> i, const B
 }
 
 template<int I, int... Js> 
-double getLagrangePolynomial(const double t, const BIC::Fixed<int, I> i, const BIC::FixedArray<int, Js...> /* js */) const 
-{ 
+double getLagrangePolynomial(const double t, const BIC::Fixed<int, I> i, const BIC::FixedArray<int, Js...> js) const 
+{
+	static_assert(not BIC::contains(js, i));
 	return ((double(t - Js) / double(i - Js)) * ...); 
 }
 ```
