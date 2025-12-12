@@ -104,7 +104,7 @@ Here we compute the Ith lagrange polynomials by concatenating two `BIC::Seq`, on
 template<int I, int N>
 double getLagrangePolynomial(const double t, const BIC::Fixed<int, I> i, const BIC::Fixed<int, N> /* n */) const 
 { 
-	return getLagrangePolynomial(t, i, BIC::cat(BIC::seq<int, 0u, I>, BIC::seq<int, I+1, N>)); 
+	return getLagrangePolynomial(t, i, BIC::cat(BIC::seq<int, 0, I>, BIC::seq<int, I+1, N>)); 
 }
 
 template<int I, int... Js> 
