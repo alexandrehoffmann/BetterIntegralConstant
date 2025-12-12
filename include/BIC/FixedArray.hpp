@@ -88,7 +88,7 @@ struct FixedArrayContains<T, VALUE, FIRST_VALUE> : Fixed<bool, VALUE == FIRST_VA
 } // namespace detail
 
 template<typename T, T VALUE, T... VALUES>
-Fixed< bool, detail::FixedArrayContains<T, VALUE, VALUES...>::value > contains(const FixedArray<T, VALUES...>, const Fixed<T, VALUE>) { return {}; }
+constexpr Fixed< bool, detail::FixedArrayContains<T, VALUE, VALUES...>::value > contains(const FixedArray<T, VALUES...>, const Fixed<T, VALUE>) { return {}; }
 
 /**
  * @brief Retrieve an element at index `I` from a FixedArray.
@@ -100,7 +100,7 @@ Fixed< bool, detail::FixedArrayContains<T, VALUE, VALUES...>::value > contains(c
  * @param array The FixedArray instance (passed for type deduction).
  */
 template<size_t I, typename T, T... VALUES>
-FixedArrayElement<I, T, VALUES...> get(const FixedArray<T, VALUES...>) { return {}; }
+constexpr FixedArrayElement<I, T, VALUES...> get(const FixedArray<T, VALUES...>) { return {}; }
 
 /**
  * @brief Concatenate two Fixed.
@@ -114,7 +114,7 @@ FixedArrayElement<I, T, VALUES...> get(const FixedArray<T, VALUES...>) { return 
  * @return A new `FixedArray<T, lhsValue, rhsValue>` inserted at the end.
  */
 template<typename T, T lhsValue, T rhsValue>
-FixedArray<T, lhsValue, rhsValue> cat(const Fixed<T, lhsValue>, const Fixed<T, rhsValue>) { return {}; } 
+constexpr FixedArray<T, lhsValue, rhsValue> cat(const Fixed<T, lhsValue>, const Fixed<T, rhsValue>) { return {}; } 
 
 /**
  * @brief Concatenate a FixedArray and a Fixed.
@@ -128,7 +128,7 @@ FixedArray<T, lhsValue, rhsValue> cat(const Fixed<T, lhsValue>, const Fixed<T, r
  * @return A new FixedArray with `newBack` inserted at the end.
  */
 template<typename T, T newBack, T... values> 
-FixedArray<T, values..., newBack> cat(const FixedArray<T, values...>, Fixed<T, newBack>) { return {}; }
+constexpr FixedArray<T, values..., newBack> cat(const FixedArray<T, values...>, Fixed<T, newBack>) { return {}; }
 
 /**
  * @brief Concatenate a Fixed and a FixedArray.
@@ -142,7 +142,7 @@ FixedArray<T, values..., newBack> cat(const FixedArray<T, values...>, Fixed<T, n
  * @return A new FixedArray with `newFront` inserted at the beginning.
  */
 template<typename T, T newFront, T... values> 
-FixedArray<T, newFront, values...> cat(Fixed<T,newFront>, const FixedArray<T, values...>) { return {}; }
+constexpr FixedArray<T, newFront, values...> cat(Fixed<T,newFront>, const FixedArray<T, values...>) { return {}; }
 
 /**
  * @brief Concatenate two FixedArray.
@@ -156,7 +156,7 @@ FixedArray<T, newFront, values...> cat(Fixed<T,newFront>, const FixedArray<T, va
  * @return A new FixedArray with `lhsValues` inserted at the beginning.
  */
 template<typename T, T... lhsValues, T... rhsValues>
-FixedArray<T, lhsValues..., rhsValues...> cat(FixedArray<T, lhsValues...> /* lhs */, FixedArray<T, rhsValues...> /* rhs */) { return {}; }
+constexpr FixedArray<T, lhsValues..., rhsValues...> cat(FixedArray<T, lhsValues...> /* lhs */, FixedArray<T, rhsValues...> /* rhs */) { return {}; }
 
 } // namespace BIC
 
