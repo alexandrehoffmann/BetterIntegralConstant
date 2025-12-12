@@ -2,6 +2,7 @@
 #define BIC_FIXED_ARRAY_HPP
 
 #include <BIC/Fixed.hpp>
+#include <BIC/FixedArrayElement.hpp>
 
 #include <array>
 #include <cstddef> // for size_t
@@ -26,7 +27,9 @@ struct FixedArray
 	using Scalar   = T;                                ///<  @brief Scalar value type.
 	using Type     = std::array<T, sizeof...(VALUES)>; ///<  @brief The underlying std::array type.
 	using Iterator = typename Type::const_iterator;    ///<  @brief Const iterator type for the underlying array.
-	
+
+	template<size_t I> using IthElement = FixedArrayElement<I, T, VALUES...>;
+
 	constexpr operator Type() const { return {VALUES...}; }  ///<  @brief Implicit conversion operator to the underlying std::array.
 	
 	static constexpr Type                             values = {VALUES...}; ///<  @brief Compile-time array of the stored values.
@@ -34,6 +37,8 @@ struct FixedArray
 	static constexpr Fixed<bool, size == 0>           empty  = {};
 	
 	constexpr const Scalar& operator[](const size_t i) const { return values[i]; }
+
+	template<size_t I> constexpr IthElement<I> operator[](const Fixed<size_t, I>) const { return {}; }
 	
 	constexpr Iterator begin() const { return std::begin(values); } 
 	constexpr Iterator end()   const { return std::end(values); }
@@ -72,63 +77,6 @@ constexpr FixedIndices<INDICES...> fixedIndices = {};
 // ============================================================================
 
 /**
- * @brief Append a scalar value to the back of a FixedArray.
- *
- * @tparam T       Scalar type.
- * @tparam newBack Value to append.
- * @tparam values  Existing array values.
- *
- * @param array A FixedArray of existing values.
- * @param value A Fixed<T,newBack> wrapper containing the value to append.
- * @return A new FixedArray with `newBack` appended at the end.
- */
-template<typename T, T newBack, T... values> 
-constexpr FixedArray<T, values..., newBack> append(const FixedArray<T, values...>, Fixed<T,newBack>) { return {}; }
-
-/**
- * @brief Append a scalar value to the front of a FixedArray.
- *
- * @tparam T        Scalar type.
- * @tparam newFront Value to prepend.
- * @tparam values   Existing array values.
- *
- * @param value A Fixed<T,newFront> wrapper containing the value to prepend.
- * @param array A FixedArray of existing values.
- * @return A new FixedArray with `newFront` inserted at the beginning.
- */
-template<typename T, T newFront, T... values> 
-constexpr FixedArray<T, newFront, values...> append(Fixed<T,newFront>, const FixedArray<T, values...>) { return {}; }
-
-namespace detail
-{
-	template<size_t I, typename T, T... VALUES> struct FixedArrayElementHelper;
-
-    template<size_t I, typename T, T FIRST_VALUE, T... OTHER_VALUES> requires(I != 0)
-    struct FixedArrayElementHelper<I, T, FIRST_VALUE, OTHER_VALUES...>
-    {
-        using Type = typename FixedArrayElementHelper<I-1, T, OTHER_VALUES...>::Type;
-    };
-
-    template<size_t I, typename T, T FIRST_VALUE, T... OTHER_VALUES> requires(I == 0)
-    struct FixedArrayElementHelper<I, T, FIRST_VALUE, OTHER_VALUES...>
-    {
-        using Type = Fixed<T, FIRST_VALUE>;
-    };
-} // namespace detail
-
-/**
- * @brief Retrieve the type of the `I`th Fixed from a FixedArray.
- *
- * @tparam I      Index to retrieve (must be zero).
- * @tparam T      Scalar type.
- * @tparam values elements.
- *
- * @param array The FixedArray instance (passed for type deduction).
- */
-template<size_t I, typename T, T... VALUES>
-using FixedArrayElement = typename detail::FixedArrayElementHelper<I, T, VALUES...>::Type;
-
-/**
  * @brief Retrieve an element at index `I` from a FixedArray.
  *
  * @tparam I      Index to retrieve (must be zero).
@@ -140,6 +88,61 @@ using FixedArrayElement = typename detail::FixedArrayElementHelper<I, T, VALUES.
 template<size_t I, typename T, T... VALUES>
 FixedArrayElement<I, T, VALUES...> get(const FixedArray<T, VALUES...>) { return {}; }
 
+/**
+ * @brief Concatenate two Fixed.
+ *
+ * @tparam T         Scalar type.
+ * @tparam lhsValue  Value to prepend.
+ * @tparam rhsValue  Value to append.
+ *
+ * @param value A Fixed containing the value to prepend.
+ * @param array A Fixed containing the value to append.
+ * @return A new `FixedArray<T, lhsValue, rhsValue>` inserted at the end.
+ */
+template<typename T, T lhsValue, T rhsValue>
+FixedArray<T, lhsValue, rhsValue> cat(const Fixed<T, lhsValue>, const Fixed<T, rhsValue>) { return {}; } 
+
+/**
+ * @brief Concatenate a FixedArray and a Fixed.
+ *
+ * @tparam T         Scalar type.
+ * @tparam values    Values to prepend.
+ * @tparam newBack   Value to append.
+ *
+ * @param value A FixedArray containing the values to prepend.
+ * @param array A Fixed containing the value to append.
+ * @return A new FixedArray with `newBack` inserted at the end.
+ */
+template<typename T, T newBack, T... values> 
+FixedArray<T, values..., newBack> cat(const FixedArray<T, values...>, Fixed<T, newBack>) { return {}; }
+
+/**
+ * @brief Concatenate a Fixed and a FixedArray.
+ *
+ * @tparam T         Scalar type.
+ * @tparam newFront  Value to prepend.
+ * @tparam values    Values to append.
+ *
+ * @param value A Fixed containing the value to prepend.
+ * @param array A FixedArray containing the values to append.
+ * @return A new FixedArray with `newFront` inserted at the beginning.
+ */
+template<typename T, T newFront, T... values> 
+FixedArray<T, newFront, values...> cat(Fixed<T,newFront>, const FixedArray<T, values...>) { return {}; }
+
+/**
+ * @brief Concatenate two FixedArray.
+ *
+ * @tparam T         Scalar type.
+ * @tparam lhsValues Values to prepend.
+ * @tparam rhsValues Values to append.
+ *
+ * @param value A FixedArray containing the values to prepend.
+ * @param array A FixedArray containing the values to append.
+ * @return A new FixedArray with `lhsValues` inserted at the beginning.
+ */
+template<typename T, T... lhsValues, T... rhsValues>
+FixedArray<T, lhsValues..., rhsValues...> cat(FixedArray<T, lhsValues...> /* lhs */, FixedArray<T, rhsValues...> /* rhs */) { return {}; }
 
 } // namespace BIC
 
