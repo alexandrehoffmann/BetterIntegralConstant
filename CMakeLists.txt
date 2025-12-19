@@ -30,6 +30,7 @@ set(BIC_COMPILE_WARNINGS
     -pedantic
     -pedantic-errors
 	-Wno-error=array-bounds
+	-Wdouble-promotion
 )
 
 # Set default build type if not specified
@@ -84,7 +85,7 @@ target_include_directories(BIC
 
 target_link_libraries(BIC INTERFACE fmt::fmt)
 
-target_compile_options(BIC INTERFACE
+target_compile_options(BIC PRIVATE
     $<$<COMPILE_LANGUAGE:CXX>:${BIC_COMPILE_WARNINGS}>
 )
 
