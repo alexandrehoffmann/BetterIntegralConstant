@@ -4,35 +4,6 @@ project(BetterIntegralConstant VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# List of compiler flags
-set(BIC_COMPILE_WARNINGS
-    -fopenmp-simd
-    -Wundef
-    -Wvarargs
-    -Wall
-    -Wextra
-    -Winit-self
-    -Wpedantic
-    -Werror
-    -Wconversion
-    -Wuninitialized
-    -Wmissing-declarations
-    -Wrange-loop-construct
-    -Wsign-conversion
-    -Wshadow
-    -Wnon-virtual-dtor
-    -Wold-style-cast
-    -Wcast-align
-    -Woverloaded-virtual
-    -Wnull-dereference
-    -Wformat=2
-    -flax-vector-conversions
-    -pedantic
-    -pedantic-errors
-	-Wno-error=array-bounds
-	-Wdouble-promotion
-)
-
 # Set default build type if not specified
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build." FORCE)
@@ -85,13 +56,13 @@ target_include_directories(BIC
 
 target_link_libraries(BIC INTERFACE fmt::fmt)
 
-target_compile_options(BIC PRIVATE
+target_compile_options(BIC INTERFACE
     $<$<COMPILE_LANGUAGE:CXX>:${BIC_COMPILE_WARNINGS}>
 )
 
 if(BIC_NATIVE_OPT)
     message(STATUS "Enabling native CPU optimizations (-march=native -mtune=native)")
-    target_compile_options(BIC PRIVATE -march=native -mtune=native)
+    target_compile_options(BIC INTERFACE -march=native -mtune=native)
 endif()
 
 # === Installation ===
