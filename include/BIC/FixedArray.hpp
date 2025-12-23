@@ -105,58 +105,58 @@ constexpr FixedArrayElement<I, T, VALUES...> get(const FixedArray<T, VALUES...>)
 /**
  * @brief Concatenate two Fixed.
  *
- * @tparam T         Scalar type.
- * @tparam lhsValue  Value to prepend.
- * @tparam rhsValue  Value to append.
+ * @tparam T          Scalar type.
+ * @tparam LHS_VALUE  Value to prepend.
+ * @tparam RHS_VALUE  Value to append.
  *
  * @param value A Fixed containing the value to prepend.
  * @param array A Fixed containing the value to append.
  * @return A new `FixedArray<T, lhsValue, rhsValue>` inserted at the end.
  */
-template<typename T, T lhsValue, T rhsValue>
-constexpr FixedArray<T, lhsValue, rhsValue> cat(const Fixed<T, lhsValue>, const Fixed<T, rhsValue>) { return {}; } 
+template<typename T, T LHS_VALUES, T RHS_VALUE>
+constexpr FixedArray<T, lhsValue, rhsValue> cat(const Fixed<T, LHS_VALUES>, const Fixed<T, RHS_VALUE>) { return {}; } 
 
 /**
  * @brief Concatenate a FixedArray and a Fixed.
  *
  * @tparam T         Scalar type.
- * @tparam values    Values to prepend.
- * @tparam newBack   Value to append.
+ * @tparam VALUES    Values to prepend.
+ * @tparam NEW_BACK  Value to append.
  *
  * @param value A FixedArray containing the values to prepend.
  * @param array A Fixed containing the value to append.
  * @return A new FixedArray with `newBack` inserted at the end.
  */
-template<typename T, T newBack, T... values> 
-constexpr FixedArray<T, values..., newBack> cat(const FixedArray<T, values...>, Fixed<T, newBack>) { return {}; }
+template<typename T, T NEW_BACK, T... VALUES> 
+constexpr FixedArray<T, VALUES..., NEW_BACK> cat(const FixedArray<T, VALUES...>, Fixed<T, NEW_BACK>) { return {}; }
 
 /**
  * @brief Concatenate a Fixed and a FixedArray.
  *
  * @tparam T         Scalar type.
- * @tparam newFront  Value to prepend.
- * @tparam values    Values to append.
+ * @tparam NEW_FRONT Value to prepend.
+ * @tparam VALUES    Values to append.
  *
  * @param value A Fixed containing the value to prepend.
  * @param array A FixedArray containing the values to append.
  * @return A new FixedArray with `newFront` inserted at the beginning.
  */
-template<typename T, T newFront, T... values> 
-constexpr FixedArray<T, newFront, values...> cat(Fixed<T,newFront>, const FixedArray<T, values...>) { return {}; }
+template<typename T, T NEW_FRONT, T... VALUES> 
+constexpr FixedArray<T, NEW_FRONT, VALUES...> cat(Fixed<T,NEW_FRONT>, const FixedArray<T, VALUES...>) { return {}; }
 
 /**
  * @brief Concatenate two FixedArray.
  *
- * @tparam T         Scalar type.
- * @tparam lhsValues Values to prepend.
- * @tparam rhsValues Values to append.
+ * @tparam T          Scalar type.
+ * @tparam LHS_VALUES Values to prepend.
+ * @tparam RHS_VALUES Values to append.
  *
  * @param value A FixedArray containing the values to prepend.
  * @param array A FixedArray containing the values to append.
  * @return A new FixedArray with `lhsValues` inserted at the beginning.
  */
-template<typename T, T... lhsValues, T... rhsValues>
-constexpr FixedArray<T, lhsValues..., rhsValues...> cat(FixedArray<T, lhsValues...> /* lhs */, FixedArray<T, rhsValues...> /* rhs */) { return {}; }
+template<typename T, T... LHS_VALUES, T... RHS_VALUES>
+constexpr FixedArray<T, LHS_VALUES..., RHS_VALUES...> cat(FixedArray<T, LHS_VALUES...> /* lhs */, FixedArray<T, RHS_VALUES...> /* rhs */) { return {}; }
 
 } // namespace BIC
 
