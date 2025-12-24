@@ -90,6 +90,36 @@ struct FixedArrayContains<T, VALUE, FIRST_VALUE> : Fixed<bool, VALUE == FIRST_VA
 template<typename T, T VALUE, T... VALUES>
 constexpr Fixed< bool, detail::FixedArrayContains<T, VALUE, VALUES...>::value > contains(const FixedArray<T, VALUES...>, const Fixed<T, VALUE>) { return {}; }
 
+namespace detail
+{
+
+template<typename LhsArray, typename RhsArray>
+struct FixedArraySubstract;
+
+template<typename T, T FIRST_LHS_VALUE, T... OTHER_LHS_VALUES, T... RHS_VALUES>
+struct FixedArraySubstract< FixedArray<T, FIRST_LHS_VALUE, OTHER_LHS_VALUES...>, FixedArray<T, RHS_VALUES...> >
+{
+	using FirstValueInRhs    = typename FixedArraySubstract< FixedArray<T, OTHER_LHS_VALUES...>, FixedArray<T, RHS_VALUES...> >::Type;
+	using FirstValueNotInRhs = decltype(cat(fixed<T, FIRST_LHS_VALUE>, FirstValueInRhs{}));
+
+	using Type = std::conditional_t<detail::FixedArrayContains<T, FIRST_LHS_VALUE, RHS_VALUES...>::value, 
+		FirstValueInRhs,
+		FirstValueNotInRhs>;
+};
+
+template<typename T, T LHS_VALUE, T... RHS_VALUES>
+struct FixedArraySubstract< FixedArray<T, LHS_VALUE>, FixedArray<T, RHS_VALUES...> >
+{
+	using Type = std::conditional_t<detail::FixedArrayContains<T, LHS_VALUE, RHS_VALUES...>::value, 
+		FixedArray<T>,
+		FixedArray<T, LHS_VALUE>>;
+};
+
+} // namespace detail
+
+template<typename T, T... LHS_VALUES, T... RHS_VALUES>
+constexpr typename FixedArraySubstract< FixedArray<T, LHS_VALUES...>, FixedArray<T, RHS_VALUES...> >::Type substract(const FixedArray<T, LHS_VALUES...>, const FixedArray<T, RHS_VALUES...>) { return {}; }
+
 /**
  * @brief Retrieve an element at index `I` from a FixedArray.
  *
