@@ -118,7 +118,7 @@ struct FixedArraySubstract< FixedArray<T, LHS_VALUE>, FixedArray<T, RHS_VALUES..
 } // namespace detail
 
 template<typename T, T... LHS_VALUES, T... RHS_VALUES>
-constexpr typename FixedArraySubstract< FixedArray<T, LHS_VALUES...>, FixedArray<T, RHS_VALUES...> >::Type substract(const FixedArray<T, LHS_VALUES...>, const FixedArray<T, RHS_VALUES...>) { return {}; }
+constexpr typename detail::FixedArraySubstract< FixedArray<T, LHS_VALUES...>, FixedArray<T, RHS_VALUES...> >::Type substract(const FixedArray<T, LHS_VALUES...>, const FixedArray<T, RHS_VALUES...>) { return {}; }
 
 /**
  * @brief Retrieve an element at index `I` from a FixedArray.
@@ -144,7 +144,7 @@ constexpr FixedArrayElement<I, T, VALUES...> get(const FixedArray<T, VALUES...>)
  * @return A new `FixedArray<T, lhsValue, rhsValue>` inserted at the end.
  */
 template<typename T, T LHS_VALUES, T RHS_VALUE>
-constexpr FixedArray<T, lhsValue, rhsValue> cat(const Fixed<T, LHS_VALUES>, const Fixed<T, RHS_VALUE>) { return {}; } 
+constexpr FixedArray<T, LHS_VALUES, RHS_VALUE> cat(const Fixed<T, LHS_VALUES>, const Fixed<T, RHS_VALUE>) { return {}; } 
 
 /**
  * @brief Concatenate a FixedArray and a Fixed.

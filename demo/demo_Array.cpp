@@ -31,5 +31,8 @@ int main()
 	fmt::print("FixedArray<int,2,4,3,-1,9> contains 9 : {} is fixed ? {}\n", BIC::contains(BIC::fixedArray<int,2,4,3,-1,9>, BIC::fixed<int, 9>), BIC::isFixed(BIC::contains(BIC::fixedArray<int,2,4,3,-1,9>, BIC::fixed<int, 9>)));
 	fmt::print("FixedArray<int,2,4,3,-1,9> contains 9 : {} is fixed ? {}\n", BIC::contains(BIC::fixedArray<int,2,4,3,-1,9>, BIC::fixed<int, 0>), BIC::isFixed(BIC::contains(BIC::fixedArray<int,2,4,3,-1,9>, BIC::fixed<int, 0>)));
 
+	fmt::print("sub(FixedArray<int, 2,4,3,-1,9>, FixedArray<int, 2,4,3,-1,9>) = {}\n", BIC::substract(BIC::fixedArray<int,2,4,3,-1,9>, BIC::fixedArray<int,2,4,3,-1,9>));
+	fmt::print("sub(FixedArray<int, 2,4,3,-1,9>, FixedArray<int, 2,3,-1>) = {}\n", BIC::substract(BIC::fixedArray<int,2,4,3,-1,9>, BIC::fixedArray<int,2,3,-1>));
+
 	return EXIT_SUCCESS;
 }
