@@ -95,6 +95,9 @@ Basic usage:
     {
         fmt::print("i = {} is i fixed ? {}\n", i, isFixed(i));
     });
+
+	fmt::print("sub(FixedArray<int, 2,4,3,-1,9>, FixedArray<int, 2,4,3,-1,9>) = {}\n", BIC::substract(BIC::fixedArray<int,2,4,3,-1,9>, BIC::fixedArray<int,2,4,3,-1,9>));
+	fmt::print("sub(FixedArray<int, 2,4,3,-1,9>, FixedArray<int, 2,3,-1>) = {}\n", BIC::substract(BIC::fixedArray<int,2,4,3,-1,9>, BIC::fixedArray<int,2,3,-1>));
 ```
 
 Concatenation:
