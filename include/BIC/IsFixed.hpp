@@ -60,7 +60,7 @@ template<typename T>
 struct IsFixed<IsFixed<T>> : Fixed<bool, true> {}; 
 
 template<typename T>
-concept Fixed_concept = IsFixed<T>::value;
+concept CFixed = IsFixed<T>::value;
 
 /**
  * @brief Helper constexpr function to create an `IsFixed` object from a value.
