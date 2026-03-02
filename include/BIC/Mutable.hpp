@@ -28,6 +28,8 @@
 namespace BIC
 {
 	
+template<typename T, T VALUE> struct Fixed;
+	
 namespace detail
 {
 
