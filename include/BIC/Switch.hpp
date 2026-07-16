@@ -14,7 +14,7 @@ template<typename T, T... CASES, typename UnaryFunc>
 constexpr switchCase(FixedArray<T, CASES...>, T targetCase, UnaryFunc&& func) { ((targetCase == CASES and (func(fixed<T, CASES>), true)) or ...); return std::forward<UnaryFunc>(func); }
 
 template<typename Size, Size FIRST_CASE, Size BOUND_CASE, typename UnaryFunc> 
-constexpr switchCase(Fixed<Size, FIRST_CASE>, Fixed<Size, BOUND_CASE>, Size targetCase, UnaryFunc&& func) { return switchCase(seq<Size, FIRST, BOUND>, std::forward<UnaryFunc>(func)); }
+constexpr switchCase(Fixed<Size, FIRST_CASE>, Fixed<Size, BOUND_CASE>, Size targetCase, UnaryFunc&& func) { return switchCase(seq<Size, FIRST, BOUND>, targetCase, std::forward<UnaryFunc>(func)); }
 	
 } // namespace BIC
 
