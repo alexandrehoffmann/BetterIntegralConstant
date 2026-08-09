@@ -5,4 +5,5 @@
 #include <BIC/IsFixed.hpp>
 #include <BIC/Loops.hpp>
 #include <BIC/Mutable.hpp>
+#include <BIC/CMaybeFixed.hpp>
 #include <BIC/Seq.hpp>
