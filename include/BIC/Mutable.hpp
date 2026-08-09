@@ -43,7 +43,7 @@ struct MutableTraits
 template<typename T, T VALUE> 
 struct MutableTraits<Fixed<T,VALUE>>
 {
-    using Type = T;
+    using Type = typename MutableTraits<T>::Type;
 };
 
 template<typename T> 
