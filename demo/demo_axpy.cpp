@@ -1,7 +1,7 @@
 #include <BIC/Core.hpp>
 
 #include <vector>
-#include <fmt/ranges.h>
+#include <print>
 
 template<typename Alpha, typename Scalar, typename Size>
 void axpy(const Alpha alpha, const Scalar* x, const Size N, Scalar* y)
@@ -23,12 +23,12 @@ int main()
 	// the compiler will generate a for loop
 	axpy(1, x.data(), N, y.data()); 
 	
-	fmt::print("y = {}\n", fmt::join(y, ", "));
+	std::print("y = {}\n", y);
 	// axpy with BIC::fixed, the if axpy is not inlined
 	// the compiler doen't need to generate a loop
 	axpy(BIC::fixed<double,1.>, x.data(), BIC::fixed<size_t, N>, y.data());
 	
-	fmt::print("y = {}\n", fmt::join(y, ", "));
+	std::print("y = {}\n", y);
 	
 	return EXIT_SUCCESS;
 }

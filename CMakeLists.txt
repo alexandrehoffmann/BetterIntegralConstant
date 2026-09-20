@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 project(BetterIntegralConstant VERSION 1.0.0 LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Set default build type if not specified
@@ -14,9 +14,6 @@ endif()
 # === Options ===
 option(BIC_BUILD_DEMO "Build demo executable" OFF)
 option(BIC_BUILD_DOC  "Build Doxygen documentation" OFF)
-
-# === Dependencies ===
-find_package(fmt REQUIRED)
 
 # === Doxygen ===
 if(BIC_BUILD_DOC)
@@ -54,7 +51,7 @@ target_include_directories(BIC
         $<INSTALL_INTERFACE:include>
 )
 
-target_link_libraries(BIC INTERFACE fmt::fmt)
+target_link_libraries(BIC)
 
 target_compile_options(BIC INTERFACE
     $<$<COMPILE_LANGUAGE:CXX>:${BIC_COMPILE_WARNINGS}>

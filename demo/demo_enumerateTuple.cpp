@@ -1,6 +1,6 @@
 #include <BIC/Core.hpp>
 
-#include <fmt/core.h>
+#include <print>
 
 namespace detail
 {
@@ -42,15 +42,15 @@ int main()
 {
 	std::tuple<int, double, char> t(1, -2.9, 'C');
 	
-	fmt::print("forward enumeration:\n");
+	std::print("forward enumeration:\n");
 	enumerateTuple([](const auto i, const auto ti) -> void
 	{
-		fmt::print("{}th element of the tuple is {}\n", i, ti);
+		std::print("{}th element of the tuple is {}\n", i, ti);
 	}, t);
-	fmt::print("backward enumeration:\n");
+	std::print("backward enumeration:\n");
 	reverseEnumerateTuple([](const auto i, const auto ti) -> void
 	{
-		fmt::print("{}th element of the tuple is {}\n", i, ti);
+		std::print("{}th element of the tuple is {}\n", i, ti);
 	}, t);
 	
 	return EXIT_SUCCESS;
