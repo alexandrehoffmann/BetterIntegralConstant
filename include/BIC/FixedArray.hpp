@@ -37,7 +37,7 @@ struct FixedArray
   static constexpr Fixed<size_t, sizeof...(VALUES)> size = {}; ///<  @brief Number of stored elements.
   static constexpr Fixed<bool, size == 0> empty = {};
 
-  constexpr const Scalar &operator[](const size_t i) const noexcept { return values[i]; }
+  constexpr const Scalar& operator[](const size_t i) const noexcept { return values[i]; }
 
   template <size_t I>
   constexpr IthElement<I> operator[](const Fixed<size_t, I>) const noexcept

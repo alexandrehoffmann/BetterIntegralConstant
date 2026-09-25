@@ -12,7 +12,7 @@ class std::formatter<BIC::Fixed<T, value>> : public std::formatter<T>
 {
 public:
   template <typename Context>
-  constexpr Context::iterator format(const BIC::Fixed<T, value>, Context &ctx) const
+  constexpr Context::iterator format(const BIC::Fixed<T, value>, Context& ctx) const
   {
     return format_to(ctx.out(), "{}", value);
   }
@@ -23,7 +23,7 @@ class std::formatter<BIC::IsFixed<T>> : public std::formatter<bool>
 {
 public:
   template <typename Context>
-  constexpr Context::iterator format(const BIC::IsFixed<T>, Context &ctx) const
+  constexpr Context::iterator format(const BIC::IsFixed<T>, Context& ctx) const
   {
     return format_to(ctx.out(), "{}", BIC::IsFixed<T>::value);
   }
@@ -34,7 +34,7 @@ class std::formatter<BIC::FixedArray<T, VALUES...>> : public std::formatter<std:
 {
 public:
   template <typename Context>
-  constexpr auto format(const BIC::FixedArray<T, VALUES...>, Context &ctx) const
+  constexpr auto format(const BIC::FixedArray<T, VALUES...>, Context& ctx) const
   {
     return format_to(ctx.out(), "{}", BIC::FixedArray<T, VALUES...>::values);
   }

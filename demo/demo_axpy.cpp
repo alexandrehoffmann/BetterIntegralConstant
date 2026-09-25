@@ -4,7 +4,7 @@
 #include <vector>
 
 template <typename Alpha, typename Scalar, typename Size>
-void axpy(const Alpha alpha, const Scalar *x, const Size N, Scalar *y)
+void axpy(const Alpha alpha, const Scalar* x, const Size N, Scalar* y)
 {
   for(BIC::Mutable<Size> i = 0; i != N; ++i)
     {

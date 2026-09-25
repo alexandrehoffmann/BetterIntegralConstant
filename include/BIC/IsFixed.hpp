@@ -82,7 +82,7 @@ concept CFixed = IsFixed<T>::value;
  * @endcode
  */
 template <typename T>
-constexpr IsFixed<T> isFixed(const T &)
+constexpr IsFixed<T> isFixed(const T&)
 {
   return {};
 }
