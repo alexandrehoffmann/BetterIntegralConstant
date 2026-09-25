@@ -24,32 +24,34 @@
  * using D = BIC::Mutable<BIC::IsFixed<int>>; // bool
  * @endcode
  */
- 
+
 namespace BIC
 {
-	
-template<typename T, T VALUE> struct Fixed;
-template<typename T>          struct IsFixed;
-	
+
+template <typename T, T VALUE>
+struct Fixed;
+template <typename T>
+struct IsFixed;
+
 namespace detail
 {
 
-template<typename T>
+template <typename T>
 struct MutableTraits
 {
-    using Type = T;
+  using Type = T;
 };
 
-template<typename T, T VALUE> 
-struct MutableTraits<Fixed<T,VALUE>>
+template <typename T, T VALUE>
+struct MutableTraits<Fixed<T, VALUE>>
 {
-    using Type = typename MutableTraits<T>::Type;
+  using Type = typename MutableTraits<T>::Type;
 };
 
-template<typename T> 
+template <typename T>
 struct MutableTraits<IsFixed<T>>
 {
-    using Type = bool;
+  using Type = bool;
 };
 
 } // namespace detail
@@ -68,9 +70,9 @@ struct MutableTraits<IsFixed<T>>
  * BIC::Mutable<A> value = 0; // type is int
  * @endcode
  */
-template<typename T>
+template <typename T>
 using Mutable = typename detail::MutableTraits<T>::Type;
-	
+
 } // namespace BIC
 
 #endif // BIC_MUTABLE_HPP

@@ -8,37 +8,43 @@ namespace BIC
 
 namespace detail
 {
-    
-template<typename T, T start, T stop, T step, T... values> struct SeqHelper;
 
-template<typename T, T start, T stop, T step, T... values> requires(step > 0 and start + step < stop)
+template <typename T, T start, T stop, T step, T... values>
+struct SeqHelper;
+
+template <typename T, T start, T stop, T step, T... values>
+  requires(step > 0 and start + step < stop)
 struct SeqHelper<T, start, stop, step, values...>
 {
-    using Type = typename SeqHelper<T, start + step, stop, step, values..., start>::Type;
+  using Type = typename SeqHelper<T, start + step, stop, step, values..., start>::Type;
 };
 
-template<typename T, T start, T stop, T step, T... values> requires(step < 0 and start + step > stop)
+template <typename T, T start, T stop, T step, T... values>
+  requires(step<0 and start + step> stop)
 struct SeqHelper<T, start, stop, step, values...>
 {
-    using Type = typename SeqHelper<T, start + step, stop, step, values..., start>::Type;
+  using Type = typename SeqHelper<T, start + step, stop, step, values..., start>::Type;
 };
 
-template<typename T, T start, T stop, T step, T... values> requires(step > 0 and start < stop and start + step >= stop)
+template <typename T, T start, T stop, T step, T... values>
+  requires(step > 0 and start < stop and start + step >= stop)
 struct SeqHelper<T, start, stop, step, values...>
 {
-    using Type = FixedArray<T, values..., start>;
+  using Type = FixedArray<T, values..., start>;
 };
 
-template<typename T, T start, T stop, T step, T... values> requires(step < 0 and start > stop and start + step <= stop)
+template <typename T, T start, T stop, T step, T... values>
+  requires(step<0 and start> stop and start + step <= stop)
 struct SeqHelper<T, start, stop, step, values...>
 {
-    using Type = FixedArray<T, values..., start>;
+  using Type = FixedArray<T, values..., start>;
 };
 
-template<typename T, T start, T stop, T step, T... values> requires(start == stop)
+template <typename T, T start, T stop, T step, T... values>
+  requires(start == stop)
 struct SeqHelper<T, start, stop, step, values...>
 {
-    using Type = FixedArray<T, values...>;
+  using Type = FixedArray<T, values...>;
 };
 
 } // namespace detail
@@ -60,7 +66,7 @@ struct SeqHelper<T, start, stop, step, values...>
  * @tparam stop  Boundary used for recursion termination.
  * @tparam step  Step increment (default 1).
  */
-template<typename T, T start, T stop, T step=1> 
+template <typename T, T start, T stop, T step = 1>
 using Seq = typename detail::SeqHelper<T, start, stop, step>::Type;
 
 /**
@@ -78,7 +84,7 @@ using Seq = typename detail::SeqHelper<T, start, stop, step>::Type;
  * @tparam stop  Upper boundary for termination.
  * @tparam step  Step increment (default 1).
  */
-template<size_t start, size_t stop, size_t step=1> 
+template <size_t start, size_t stop, size_t step = 1>
 using IndexSeq = typename detail::SeqHelper<size_t, start, stop, step>::Type;
 
 /**
@@ -89,8 +95,8 @@ using IndexSeq = typename detail::SeqHelper<size_t, start, stop, step>::Type;
  * auto s = BIC::seq<int, 2, 10, 2>; // produces {2,4,6,8}
  * @endcode
  */
-template<typename T, T start, T stop, T step=1>
-constexpr Seq<T,start,stop, step> seq = {};
+template <typename T, T start, T stop, T step = 1>
+constexpr Seq<T, start, stop, step> seq = {};
 
 /**
  * @brief Global constexpr instance for compile-time index sequences.
@@ -100,8 +106,8 @@ constexpr Seq<T,start,stop, step> seq = {};
  * auto idx = BIC::indexSeq<0, 5>; // produces {0,1,2,3,4}
  * @endcode
  */
-template<size_t start, size_t stop, size_t step=1>
-constexpr IndexSeq<start,stop, step> indexSeq = {};
+template <size_t start, size_t stop, size_t step = 1>
+constexpr IndexSeq<start, stop, step> indexSeq = {};
 
 } // namespace BIC
 

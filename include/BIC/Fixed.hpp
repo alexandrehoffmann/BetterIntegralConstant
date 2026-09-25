@@ -1,13 +1,13 @@
 #ifndef BIC_FIXED_HPP
 #define BIC_FIXED_HPP
 
-#include <BIC/misc/ComparableTo.hpp>
-#include <type_traits> // for std::common_type_t
+#include <BIC/misc/Is_ComparableTo.hpp>
 #include <concepts>
- 
+#include <type_traits> // for std::common_type_t
+
 namespace BIC
 {
-	
+
 /**
  * @brief Represents a compile-time fixed constant of type `T` with value `VALUE`.
  *
@@ -18,14 +18,14 @@ namespace BIC
  * It can be implicitly converted to `T`, and its `value` member provides
  * access to the compile-time constant.
  */
-template<typename T, T VALUE> 
-struct Fixed 
-{ 
-	using Type = T; ///<  @brief Underlying (non-fixed) type.
-	
-    constexpr operator Type() const { return VALUE; } ///<  @brief Implicit conversion to the underlying value type.
+template <typename T, T VALUE>
+struct Fixed
+{
+  using Type = T; ///<  @brief Underlying (non-fixed) type.
 
-    static constexpr Type value = VALUE; ///<  @brief Compile-time constant value.
+  constexpr operator Type() const noexcept { return VALUE; } ///<  @brief Implicit conversion to the underlying value type.
+
+  static constexpr Type value = VALUE; ///<  @brief Compile-time constant value.
 };
 
 /**
@@ -39,68 +39,125 @@ struct Fixed
  * auto x = BIC::fixed<int, 42>; // x is a Fixed<int, 42>
  * @endcode
  */
-template<typename T, T VALUE> 
-constexpr Fixed<T,VALUE> fixed = {}; 
+template <typename T, T VALUE>
+constexpr Fixed<T, VALUE> fixed = {};
 
 // ============================================================================
 // Counter operators
 // ============================================================================
 
-template<std::integral I, I i>      constexpr Fixed<I,i+1> next(const Fixed<I,i>) { return{}; }
-template<std::integral I, I i>      constexpr Fixed<I,i-1> prev(const Fixed<I,i>) { return{}; }
+template <std::integral I, I i>
+constexpr Fixed<I, i + 1> next(const Fixed<I, i>) noexcept
+{
+  return {};
+}
+template <std::integral I, I i>
+constexpr Fixed<I, i - 1> prev(const Fixed<I, i>) noexcept
+{
+  return {};
+}
 
-template<std::integral I, I i, I j> constexpr Fixed<I,j-i> distance(const Fixed<I,i>, const Fixed<I,j>) { return{}; }
+template <std::integral I, I i, I j>
+constexpr Fixed<I, j - i> distance(const Fixed<I, i>, const Fixed<I, j>) noexcept
+{
+  return {};
+}
 
 // ============================================================================
 // Arithmetic operators for Fixed
 // ============================================================================
 
-template<typename Lhs, Lhs lhs, typename Rhs, Rhs rhs> 
-constexpr Fixed<std::common_type_t<Lhs, Rhs>, lhs + rhs> operator+(const Fixed<Lhs, lhs>, const Fixed<Rhs, rhs>) { return {}; } 
+template <typename Lhs, Lhs lhs, typename Rhs, Rhs rhs>
+constexpr Fixed<decltype(lhs + rhs), lhs + rhs> operator+(const Fixed<Lhs, lhs>, const Fixed<Rhs, rhs>) noexcept
+{
+  return {};
+}
 
-template<typename Lhs, Lhs lhs, typename Rhs, Rhs rhs> 
-constexpr Fixed<std::common_type_t<Lhs, Rhs>, lhs - rhs> operator-(const Fixed<Lhs, lhs>, const Fixed<Rhs, rhs>) { return {}; }
+template <typename Lhs, Lhs lhs, typename Rhs, Rhs rhs>
+constexpr Fixed<decltype(lhs - rhs), lhs - rhs> operator-(const Fixed<Lhs, lhs>, const Fixed<Rhs, rhs>) noexcept
+{
+  return {};
+}
 
-template<typename Lhs, Lhs lhs, typename Rhs, Rhs rhs> 
-constexpr Fixed<std::common_type_t<Lhs, Rhs>, lhs * rhs> operator*(const Fixed<Lhs, lhs>, const Fixed<Rhs, rhs>) { return {}; }
+template <typename Lhs, Lhs lhs, typename Rhs, Rhs rhs>
+constexpr Fixed<decltype(lhs * rhs), lhs * rhs> operator*(const Fixed<Lhs, lhs>, const Fixed<Rhs, rhs>) noexcept
+{
+  return {};
+}
 
-template<typename Lhs, Lhs lhs, typename Rhs, Rhs rhs> 
-constexpr Fixed<std::common_type_t<Lhs, Rhs>, lhs / rhs> operator/(const Fixed<Lhs, lhs>, const Fixed<Rhs, rhs>) { return {}; } 
+template <typename Lhs, Lhs lhs, typename Rhs, Rhs rhs>
+constexpr Fixed<decltype(lhs / rhs), lhs / rhs> operator/(const Fixed<Lhs, lhs>, const Fixed<Rhs, rhs>) noexcept
+{
+  return {};
+}
 
-template<typename T, T value>
-constexpr Fixed<T, -value> operator-(const Fixed<T, value>) { return {}; }
+template <typename T, T value>
+constexpr Fixed<T, -value> operator-(const Fixed<T, value>) noexcept
+{
+  return {};
+}
 
 // ============================================================================
 // Logical operators for Fixed
 // ============================================================================
 
-template<typename T, T lhs, T rhs> 
-constexpr Fixed<bool, lhs && rhs> operator&&(const Fixed<T, lhs>, const Fixed<T,rhs>) { return {}; } 
+template <typename T, T lhs, T rhs>
+constexpr Fixed<bool, lhs && rhs> operator&&(const Fixed<T, lhs>, const Fixed<T, rhs>) noexcept
+{
+  return {};
+}
 
-template<typename T, T lhs, T rhs> 
-constexpr Fixed<bool, lhs || rhs> operator||(const Fixed<T, lhs>, const Fixed<T,rhs>) { return {}; } 
+template <typename T, T lhs, T rhs>
+constexpr Fixed<bool, lhs || rhs> operator||(const Fixed<T, lhs>, const Fixed<T, rhs>) noexcept
+{
+  return {};
+}
 
 // ============================================================================
 // Comparison operators for Fixed
 // ============================================================================
 
-template<typename Lhs, Lhs lhs, misc::ComparableTo<Lhs> Rhs, Rhs rhs> 
-constexpr Fixed<bool, lhs < rhs> operator<(const Fixed<Lhs, lhs>, const Fixed<Rhs,rhs>) { return {}; } 
+template <typename Lhs, Lhs lhs, typename Rhs, Rhs rhs>
+  requires(misc::Is_ComparableTo<Lhs, Rhs>)
+constexpr Fixed<bool, (lhs < rhs)> operator<(const Fixed<Lhs, lhs>, const Fixed<Rhs, rhs>) noexcept
+{
+  return {};
+}
 
-template<typename Lhs, Lhs lhs, misc::ComparableTo<Lhs> Rhs, Rhs rhs> 
-constexpr Fixed<bool, lhs <= rhs> operator<=(const Fixed<Lhs, lhs>, const Fixed<Rhs,rhs>) { return {}; } 
+template <typename Lhs, Lhs lhs, typename Rhs, Rhs rhs>
+  requires(misc::Is_ComparableTo<Lhs, Rhs>)
+constexpr Fixed<bool, lhs <= rhs> operator<=(const Fixed<Lhs, lhs>, const Fixed<Rhs, rhs>) noexcept
+{
+  return {};
+}
 
-template<typename Lhs, Lhs lhs, misc::ComparableTo<Lhs> Rhs, Rhs rhs> 
-constexpr Fixed<bool, (lhs > rhs)> operator>(const Fixed<Lhs, lhs>, const Fixed<Rhs,rhs>) { return {}; } 
+template <typename Lhs, Lhs lhs, typename Rhs, Rhs rhs>
+  requires(misc::Is_ComparableTo<Lhs, Rhs>)
+constexpr Fixed<bool, (lhs > rhs)> operator>(const Fixed<Lhs, lhs>, const Fixed<Rhs, rhs>) noexcept
+{
+  return {};
+}
 
-template<typename Lhs, Lhs lhs, misc::ComparableTo<Lhs> Rhs, Rhs rhs> 
-constexpr Fixed<bool, (lhs >= rhs)> operator>=(const Fixed<Lhs, lhs>, const Fixed<Rhs,rhs>) { return {}; } 
+template <typename Lhs, Lhs lhs, typename Rhs, Rhs rhs>
+  requires(misc::Is_ComparableTo<Lhs, Rhs>)
+constexpr Fixed<bool, (lhs >= rhs)> operator>=(const Fixed<Lhs, lhs>, const Fixed<Rhs, rhs>) noexcept
+{
+  return {};
+}
 
-template<typename Lhs, Lhs lhs, misc::ComparableTo<Lhs> Rhs, Rhs rhs> 
-constexpr Fixed<bool, lhs == rhs> operator==(const Fixed<Lhs, lhs>, const Fixed<Rhs,rhs>) { return {}; } 
+template <typename Lhs, Lhs lhs, typename Rhs, Rhs rhs>
+  requires(misc::Is_ComparableTo<Lhs, Rhs>)
+constexpr Fixed<bool, lhs == rhs> operator==(const Fixed<Lhs, lhs>, const Fixed<Rhs, rhs>) noexcept
+{
+  return {};
+}
 
-template<typename Lhs, Lhs lhs, misc::ComparableTo<Lhs> Rhs, Rhs rhs> 
-constexpr Fixed<bool, lhs != rhs> operator!=(const Fixed<Lhs, lhs>, const Fixed<Rhs,rhs>) { return {}; } 
+template <typename Lhs, Lhs lhs, typename Rhs, Rhs rhs>
+  requires(misc::Is_ComparableTo<Lhs, Rhs>)
+constexpr Fixed<bool, lhs != rhs> operator!=(const Fixed<Lhs, lhs>, const Fixed<Rhs, rhs>) noexcept
+{
+  return {};
+}
 
 } // BIC
 

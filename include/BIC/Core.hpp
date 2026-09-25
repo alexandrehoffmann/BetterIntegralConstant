@@ -1,9 +1,9 @@
-#include <BIC/Reversed.hpp>
-#include <BIC/FixedArray.hpp>
 #include <BIC/Fixed.hpp>
+#include <BIC/FixedArray.hpp>
 #include <BIC/Formater.hpp>
 #include <BIC/IsFixed.hpp>
+#include <BIC/Is_MaybeFixed.hpp>
 #include <BIC/Loops.hpp>
 #include <BIC/Mutable.hpp>
-#include <BIC/CMaybeFixed.hpp>
+#include <BIC/Reversed.hpp>
 #include <BIC/Seq.hpp>

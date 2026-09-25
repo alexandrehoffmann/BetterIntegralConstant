@@ -21,30 +21,35 @@ namespace BIC
  * @tparam T       Scalar type of the array elements.
  * @tparam VALUES  Parameter pack of compile-time constant values.
  */
-template<typename T, T... VALUES> 
+template <typename T, T... VALUES>
 struct FixedArray
 {
-	using Scalar   = T;                                ///<  @brief Scalar value type.
-	using Type     = std::array<T, sizeof...(VALUES)>; ///<  @brief The underlying std::array type.
-	using Iterator = typename Type::const_iterator;    ///<  @brief Const iterator type for the underlying array.
+  using Scalar = T;                               ///<  @brief Scalar value type.
+  using Type = std::array<T, sizeof...(VALUES)>;  ///<  @brief The underlying std::array type.
+  using Iterator = typename Type::const_iterator; ///<  @brief Const iterator type for the underlying array.
 
-	template<size_t I> using IthElement = FixedArrayElement<I, T, VALUES...>;
+  template <size_t I>
+  using IthElement = FixedArrayElement<I, T, VALUES...>;
 
-	constexpr operator Type() const { return {VALUES...}; }  ///<  @brief Implicit conversion operator to the underlying std::array.
-	
-	static constexpr Type                             values = {VALUES...}; ///<  @brief Compile-time array of the stored values.
-	static constexpr Fixed<size_t, sizeof...(VALUES)> size   = {};          ///<  @brief Number of stored elements.
-	static constexpr Fixed<bool, size == 0>           empty  = {};
-	
-	constexpr const Scalar& operator[](const size_t i) const { return values[i]; }
+  constexpr operator Type() const { return { VALUES... }; } ///<  @brief Implicit conversion operator to the underlying std::array.
 
-	template<size_t I> constexpr IthElement<I> operator[](const Fixed<size_t, I>) const { return {}; }
-	
-	constexpr Iterator begin() const { return std::begin(values); } 
-	constexpr Iterator end()   const { return std::end(values); }
-	
-	constexpr Iterator cbegin() const { return std::begin(values); } 
-	constexpr Iterator cend()   const { return std::end(values); } 
+  static constexpr Type values = { VALUES... };                ///<  @brief Compile-time array of the stored values.
+  static constexpr Fixed<size_t, sizeof...(VALUES)> size = {}; ///<  @brief Number of stored elements.
+  static constexpr Fixed<bool, size == 0> empty = {};
+
+  constexpr const Scalar &operator[](const size_t i) const noexcept { return values[i]; }
+
+  template <size_t I>
+  constexpr IthElement<I> operator[](const Fixed<size_t, I>) const noexcept
+  {
+    return {};
+  }
+
+  constexpr Iterator begin() const noexcept { return std::begin(values); }
+  constexpr Iterator end() const noexcept { return std::end(values); }
+
+  constexpr Iterator cbegin() const noexcept { return std::begin(values); }
+  constexpr Iterator cend() const noexcept { return std::end(values); }
 };
 
 /**
@@ -52,8 +57,8 @@ struct FixedArray
  *
  * Useful for meta-programming utilities that operate on index lists.
  */
-template<size_t... INDICES>
-using FixedIndices = FixedArray<size_t, INDICES...>; 
+template <size_t... INDICES>
+using FixedIndices = FixedArray<size_t, INDICES...>;
 
 /**
  * @brief Global constexpr instance for simple creation of FixedArray objects.
@@ -63,13 +68,13 @@ using FixedIndices = FixedArray<size_t, INDICES...>;
  * auto arr = fixedArray<int,1,2,3>;
  * @endcode
  */
-template<typename T, T... VALUES> 
+template <typename T, T... VALUES>
 constexpr FixedArray<T, VALUES...> fixedArray = {};
 
 /**
  * @brief Global constexpr instance for creating `FixedIndices`.
  */
-template<size_t... INDICES>
+template <size_t... INDICES>
 constexpr FixedIndices<INDICES...> fixedIndices = {};
 
 // ============================================================================
@@ -78,47 +83,54 @@ constexpr FixedIndices<INDICES...> fixedIndices = {};
 
 namespace detail
 {
-	
-template<typename T, T VALUE, T FIRST_VALUE, T... OTHER_VALUES>
-struct FixedArrayContains : Fixed<bool, VALUE == FIRST_VALUE or FixedArrayContains<T, VALUE, OTHER_VALUES...>::value> {};
 
-template<typename T, T VALUE, T FIRST_VALUE>
-struct FixedArrayContains<T, VALUE, FIRST_VALUE> : Fixed<bool, VALUE == FIRST_VALUE> {};
-	
+template <typename T, T VALUE, T FIRST_VALUE, T... OTHER_VALUES>
+struct FixedArrayContains : Fixed<bool, VALUE == FIRST_VALUE or FixedArrayContains<T, VALUE, OTHER_VALUES...>::value>
+{
+};
+
+template <typename T, T VALUE, T FIRST_VALUE>
+struct FixedArrayContains<T, VALUE, FIRST_VALUE> : Fixed<bool, VALUE == FIRST_VALUE>
+{
+};
+
 } // namespace detail
 
-template<typename T, T VALUE, T... VALUES>
-constexpr Fixed< bool, detail::FixedArrayContains<T, VALUE, VALUES...>::value > contains(const FixedArray<T, VALUES...>, const Fixed<T, VALUE>) { return {}; }
+template <typename T, T VALUE, T... VALUES>
+constexpr Fixed<bool, detail::FixedArrayContains<T, VALUE, VALUES...>::value> contains(const FixedArray<T, VALUES...>, const Fixed<T, VALUE>) noexcept
+{
+  return {};
+}
 
 namespace detail
 {
 
-template<typename LhsArray, typename RhsArray>
+template <typename LhsArray, typename RhsArray>
 struct FixedArraySubstract;
 
-template<typename T, T FIRST_LHS_VALUE, T... OTHER_LHS_VALUES, T... RHS_VALUES>
-struct FixedArraySubstract< FixedArray<T, FIRST_LHS_VALUE, OTHER_LHS_VALUES...>, FixedArray<T, RHS_VALUES...> >
+template <typename T, T FIRST_LHS_VALUE, T... OTHER_LHS_VALUES, T... RHS_VALUES>
+struct FixedArraySubstract<FixedArray<T, FIRST_LHS_VALUE, OTHER_LHS_VALUES...>, FixedArray<T, RHS_VALUES...>>
 {
-	using FirstValueInRhs    = typename FixedArraySubstract< FixedArray<T, OTHER_LHS_VALUES...>, FixedArray<T, RHS_VALUES...> >::Type;
-	using FirstValueNotInRhs = decltype(cat(fixed<T, FIRST_LHS_VALUE>, FirstValueInRhs{}));
+  using FirstValueInRhs = typename FixedArraySubstract<FixedArray<T, OTHER_LHS_VALUES...>, FixedArray<T, RHS_VALUES...>>::Type;
+  using FirstValueNotInRhs = decltype(cat(fixed<T, FIRST_LHS_VALUE>, FirstValueInRhs{}));
 
-	using Type = std::conditional_t<detail::FixedArrayContains<T, FIRST_LHS_VALUE, RHS_VALUES...>::value, 
-		FirstValueInRhs,
-		FirstValueNotInRhs>;
+  using Type = std::conditional_t<detail::FixedArrayContains<T, FIRST_LHS_VALUE, RHS_VALUES...>::value, FirstValueInRhs, FirstValueNotInRhs>;
 };
 
-template<typename T, T LHS_VALUE, T... RHS_VALUES>
-struct FixedArraySubstract< FixedArray<T, LHS_VALUE>, FixedArray<T, RHS_VALUES...> >
+template <typename T, T LHS_VALUE, T... RHS_VALUES>
+struct FixedArraySubstract<FixedArray<T, LHS_VALUE>, FixedArray<T, RHS_VALUES...>>
 {
-	using Type = std::conditional_t<detail::FixedArrayContains<T, LHS_VALUE, RHS_VALUES...>::value, 
-		FixedArray<T>,
-		FixedArray<T, LHS_VALUE>>;
+  using Type = std::conditional_t<detail::FixedArrayContains<T, LHS_VALUE, RHS_VALUES...>::value, FixedArray<T>, FixedArray<T, LHS_VALUE>>;
 };
 
 } // namespace detail
 
-template<typename T, T... LHS_VALUES, T... RHS_VALUES>
-constexpr typename detail::FixedArraySubstract< FixedArray<T, LHS_VALUES...>, FixedArray<T, RHS_VALUES...> >::Type substract(const FixedArray<T, LHS_VALUES...>, const FixedArray<T, RHS_VALUES...>) { return {}; }
+template <typename T, T... LHS_VALUES, T... RHS_VALUES>
+constexpr typename detail::FixedArraySubstract<FixedArray<T, LHS_VALUES...>, FixedArray<T, RHS_VALUES...>>::Type substract(const FixedArray<T, LHS_VALUES...>,
+                                                                                                                           const FixedArray<T, RHS_VALUES...>) noexcept
+{
+  return {};
+}
 
 /**
  * @brief Retrieve an element at index `I` from a FixedArray.
@@ -129,8 +141,11 @@ constexpr typename detail::FixedArraySubstract< FixedArray<T, LHS_VALUES...>, Fi
  *
  * @param array The FixedArray instance (passed for type deduction).
  */
-template<size_t I, typename T, T... VALUES>
-constexpr FixedArrayElement<I, T, VALUES...> get(const FixedArray<T, VALUES...>) { return {}; }
+template <size_t I, typename T, T... VALUES>
+constexpr FixedArrayElement<I, T, VALUES...> get(const FixedArray<T, VALUES...>) noexcept
+{
+  return {};
+}
 
 /**
  * @brief Concatenate two Fixed.
@@ -143,8 +158,11 @@ constexpr FixedArrayElement<I, T, VALUES...> get(const FixedArray<T, VALUES...>)
  * @param array A Fixed containing the value to append.
  * @return A new `FixedArray<T, lhsValue, rhsValue>` inserted at the end.
  */
-template<typename T, T LHS_VALUES, T RHS_VALUE>
-constexpr FixedArray<T, LHS_VALUES, RHS_VALUE> cat(const Fixed<T, LHS_VALUES>, const Fixed<T, RHS_VALUE>) { return {}; } 
+template <typename T, T LHS_VALUES, T RHS_VALUE>
+constexpr FixedArray<T, LHS_VALUES, RHS_VALUE> cat(const Fixed<T, LHS_VALUES>, const Fixed<T, RHS_VALUE>) noexcept
+{
+  return {};
+}
 
 /**
  * @brief Concatenate a FixedArray and a Fixed.
@@ -157,8 +175,11 @@ constexpr FixedArray<T, LHS_VALUES, RHS_VALUE> cat(const Fixed<T, LHS_VALUES>, c
  * @param array A Fixed containing the value to append.
  * @return A new FixedArray with `newBack` inserted at the end.
  */
-template<typename T, T NEW_BACK, T... VALUES> 
-constexpr FixedArray<T, VALUES..., NEW_BACK> cat(const FixedArray<T, VALUES...>, Fixed<T, NEW_BACK>) { return {}; }
+template <typename T, T NEW_BACK, T... VALUES>
+constexpr FixedArray<T, VALUES..., NEW_BACK> cat(const FixedArray<T, VALUES...>, Fixed<T, NEW_BACK>) noexcept
+{
+  return {};
+}
 
 /**
  * @brief Concatenate a Fixed and a FixedArray.
@@ -171,8 +192,11 @@ constexpr FixedArray<T, VALUES..., NEW_BACK> cat(const FixedArray<T, VALUES...>,
  * @param array A FixedArray containing the values to append.
  * @return A new FixedArray with `newFront` inserted at the beginning.
  */
-template<typename T, T NEW_FRONT, T... VALUES> 
-constexpr FixedArray<T, NEW_FRONT, VALUES...> cat(Fixed<T,NEW_FRONT>, const FixedArray<T, VALUES...>) { return {}; }
+template <typename T, T NEW_FRONT, T... VALUES>
+constexpr FixedArray<T, NEW_FRONT, VALUES...> cat(Fixed<T, NEW_FRONT>, const FixedArray<T, VALUES...>)
+{
+  return {};
+}
 
 /**
  * @brief Concatenate two FixedArray.
@@ -185,10 +209,12 @@ constexpr FixedArray<T, NEW_FRONT, VALUES...> cat(Fixed<T,NEW_FRONT>, const Fixe
  * @param array A FixedArray containing the values to append.
  * @return A new FixedArray with `lhsValues` inserted at the beginning.
  */
-template<typename T, T... LHS_VALUES, T... RHS_VALUES>
-constexpr FixedArray<T, LHS_VALUES..., RHS_VALUES...> cat(FixedArray<T, LHS_VALUES...> /* lhs */, FixedArray<T, RHS_VALUES...> /* rhs */) { return {}; }
+template <typename T, T... LHS_VALUES, T... RHS_VALUES>
+constexpr FixedArray<T, LHS_VALUES..., RHS_VALUES...> cat(FixedArray<T, LHS_VALUES...> /* lhs */, FixedArray<T, RHS_VALUES...> /* rhs */)
+{
+  return {};
+}
 
 } // namespace BIC
 
 #endif // BIC_FIXED_ARRAY_HPP
-

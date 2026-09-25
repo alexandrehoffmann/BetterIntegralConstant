@@ -21,20 +21,22 @@
  * The trait itself derives from `BIC::Fixed<bool, true/false>` for convenient
  * compile-time evaluation and integration with other BIC metaprogramming tools.
  */
- 
+
 namespace BIC
 {
-	
+
 /**
  * @brief Default case: `T` is not a fixed constant type.
- * 
+ *
  * @tparam T Arbitrary type to test.
  *
  * In this general case, `IsFixed<T>` inherits from `Fixed<bool, false>`,
  * indicating that `T` is not a specialization of `BIC::Fixed`.
  */
-template<typename T> 
-struct IsFixed : Fixed<bool, false> {}; 
+template <typename T>
+struct IsFixed : Fixed<bool, false>
+{
+};
 
 /**
  * @brief Specialization for types that are instances of `BIC::Fixed`.
@@ -45,8 +47,10 @@ struct IsFixed : Fixed<bool, false> {};
  * This specialization inherits from `Fixed<bool, true>`, indicating that
  * the tested type is indeed a `BIC::Fixed`.
  */
-template<typename T, T value> 
-struct IsFixed<Fixed<T, value>> : Fixed<bool, true> {};  
+template <typename T, T value>
+struct IsFixed<Fixed<T, value>> : Fixed<bool, true>
+{
+};
 
 /**
  * @brief Recursive specialization: `IsFixed` of an `IsFixed` is still `true`.
@@ -56,10 +60,12 @@ struct IsFixed<Fixed<T, value>> : Fixed<bool, true> {};
  * This ensures that nested applications of `IsFixed` (e.g., `IsFixed<IsFixed<T>>`)
  * consistently evaluate to `true`.
  */
-template<typename T> 
-struct IsFixed<IsFixed<T>> : Fixed<bool, true> {}; 
+template <typename T>
+struct IsFixed<IsFixed<T>> : Fixed<bool, true>
+{
+};
 
-template<typename T>
+template <typename T>
 concept CFixed = IsFixed<T>::value;
 
 /**
@@ -75,8 +81,12 @@ concept CFixed = IsFixed<T>::value;
  * auto flag = BIC::isFixed(x); // returns IsFixed<Fixed<int,4>> → true
  * @endcode
  */
-template <typename T> constexpr IsFixed<T> isFixed(const T&) { return {}; }
-	
+template <typename T>
+constexpr IsFixed<T> isFixed(const T &)
+{
+  return {};
+}
+
 } // BIC
 
 #endif // BIC_IS_FIXED_HPP
