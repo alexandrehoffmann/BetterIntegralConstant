@@ -30,7 +30,7 @@ public:
 };
 
 template <typename T, T... VALUES>
-class std::formatter<BIC::FixedArray<T, VALUES...>> : public std::formatter<typename BIC::FixedArray<T, VALUES...>::Type>
+class std::formatter<BIC::FixedArray<T, VALUES...>> : public std::formatter<std::array<T, sizeof...(VALUES)>>
 {
 public:
   template <typename Context>
